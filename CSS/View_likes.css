@@ -1,0 +1,36 @@
+* {
+  border: 0;
+  margin: 0;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.view_likes_container{
+  padding-top: 80px;
+}
+.like {
+  padding: 20px;
+  /* background-color: aqua; */
+}
+.like a {
+  text-decoration: none;
+  color: black;
+}
+.no-scroll {
+  overflow: hidden;
+}
+.section_box {
+  padding: 5px 0 5px 0;
+  border: 1px solid black;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+}
+.like img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  margin-left: 10px;
+}
+.like p {
+  padding-left: 10px;
+  font-size: 18px;
+}

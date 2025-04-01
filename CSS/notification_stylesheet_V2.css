@@ -1,0 +1,175 @@
+.notification_container{
+  margin-bottom: 0;
+  /* background-color: bisque; */
+  position: absolute;
+  bottom: 0;
+  width: 100vw;
+}
+.notification_container section {
+  padding: 20px;
+  /* background-color: bisque; */
+}
+.notification_container fieldset {
+  border-top: 2px solid #ccc;
+  padding: 10px;
+  margin: 10px 0;
+  /* background-image: radial-gradient(); */
+}
+
+.notification_container legend {
+  font-weight: 700;
+  opacity: 0.5;
+  font-size: 0.8rem;
+  color: #000000;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+/* section a {
+  background-color: aqua;
+} */
+.notification_container h1{
+  padding-left: 5vw;
+}
+.notification_container .section_box {
+  padding: 5px 0 5px 0;
+  width: 90vw;
+  border: 1px solid black;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  /* background-color: aqua; */
+}
+
+.buyer {
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  /* background-color: aqua; */
+}
+.notification_container .section_box_content {
+  padding: 5px 3vw 5px 3vw;
+  width: 84vw;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.notification_container .section_box_content a{
+  display: flex;
+  justify-content: space-between;
+  /* padding: 0 5px 0 10px; */
+  text-decoration: none;
+  /* background-color: aqua; */
+}
+.notification_container .section_box img {
+  height: 40px;
+  width: 40px;
+  /* background-color: aqua; */
+  border-radius: 50%;
+  /* margin-left: 10px; */
+}
+.notification_container .section_box_content a p {
+  font-size: 16px;
+  line-height: 1;
+  flex-wrap: wrap;
+  color: black;
+}
+.notification_container .section_box_content .follow{
+  /* background-color: aqua; */
+  /* padding-right: 10px; */
+  width: min-content;
+  flex-shrink: 2;
+}
+
+.notification_container .section_box_content .follow input{
+  background-color: rgb(255, 172, 124);
+  color: white; 
+  /* height: fit-content; */
+  padding: 10px 7px;
+  width: min-content;
+  border-radius: 30px; 
+  z-index: 10; 
+  transition: all 0.2s;
+}
+
+.notification_container .image {
+  border-radius: 10px;
+  height: 70px;
+  width: 50px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+}
+.notification_container .image video {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+}
+.notification_container .time p {
+  font-size: 10px;
+  text-align: center;
+}
+/* .message{
+  display: flex;
+} */
+.notification_container .message button {
+  padding: 10px;
+  background-color: rgb(255, 172, 124);
+  color: white;
+  font-size: 18px;
+  border-radius: 10px;
+}
+.notification_container .message2 button {
+  padding: 10px;
+  background-color: rgb(255, 172, 124);
+  color: white;
+  font-size: 18px;
+  border-radius: 10px;
+}
+.notification_container .cancel_container {
+  background-color: #00000080;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  align-items: center;
+  top: 0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1000;
+}
+.notification_container .cancel_container .cancel_box{
+  width: 80vw;
+  background-color: white;
+  border: 1.5px solid black;
+  max-height: 80vh;
+  padding: 5vw;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.notification_container .cancel_container .cancel_box p{
+  text-align: center;
+  font-size: 18px;
+}
+.notification_container .cancel_container .cancel_box .buttons button{
+  background-color: black;
+  color: white;
+  padding: 5px 7px;
+  font-size: 16px;
+  font-weight: 900;
+  border-radius: 10px;
+  width: 50px;
+}
+.notification_container .cancel_container .cancel_box .buttons{
+  padding-top: 15px;
+  display: flex;
+  /* background-color: aqua; */
+  width: 50vw;
+  justify-content: space-around;
+}

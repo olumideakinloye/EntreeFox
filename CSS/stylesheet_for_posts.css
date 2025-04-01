@@ -1,0 +1,228 @@
+/*CSS FOR POSTS*/
+.person1_Box {
+  border: 1.5px solid black;
+  border-radius: 20px;
+  width: 90vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.person1_Boxtop {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.5dvh 4vw 0 4vw;
+}
+
+.person1_Boxtop_left {
+  display: flex;
+  justify-content: space-between;
+}
+
+.person1_Boxtop_left img {
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+}
+
+.post_profile {
+    height: 3rem;
+    width: 3rem;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    background-size: contain;
+    background-clip: border-box;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+.person1_Boxbottum {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 1.5vh 4vw 1.5vh 4vw;
+}
+
+.person1_Boxbottum img {
+  height: 20px;
+}
+
+.person1_Boxtop_textBox {
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 10px;
+}
+
+.person1_Boxtop_textBox h1 {
+  line-height: 1;
+  font-size: 1.3rem;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+.person1_Boxtop_textBox p {
+  font-size: 0.6rem;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+.intro {
+  padding: 20px 4vw 5px 4vw;
+}
+
+.intro p {
+  font-size: 1rem;
+  overflow-wrap: break-word;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+}
+
+.image_post {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.image_post img {
+  border-radius: 20px;
+  width: 100%;
+}
+
+.image_post video {
+  border-radius: 20px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 100%;
+  background-color: #0000008c;
+  object-fit: contain;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  touch-action: manipulation;
+}
+
+.image_post video:focus {
+  outline: none;
+}
+
+.postmenu {
+  display: block;
+}
+
+.likes {
+  /* width: 20px; */
+  height: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.likes p {
+  font-size: 17px;
+  height: 20px;
+}
+
+.comments_section {
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--color);
+}
+
+.comments_section svg {
+  height: 20px;
+  transform: rotate(90deg);
+}
+
+.like-animation-container {
+  z-index: 1000;
+  top: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+}
+
+.like-box {
+  position: relative;
+  transform: rotate(45deg);
+}
+
+@keyframes heartanimation {
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: scale(0.5);
+    filter: drop-shadow(100px 100px 100px red)
+      drop-shadow(-100px -100px 100px red) drop-shadow(100px -100px 100px red)
+      drop-shadow(-100px 100px 100px red);
+  }
+}
+
+.like_content {
+  animation: heartanimation 0.5s infinite alternate;
+}
+
+.like1 {
+  background-color: red;
+  height: 75px;
+  width: 115px;
+  border-radius: 200px 100% 0 200px;
+}
+
+.like2 {
+  background-color: red;
+  height: 115px;
+  width: 78px;
+  border-radius: 200px 200px 100% 0;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.load_more_posts {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+.load_more_posts_loader {
+  background-image: conic-gradient(white 0%, rgb(114, 147, 255) 100%);
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+  position: relative;
+  animation-name: loader;
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+}
+
+.load_more_posts_loader::after {
+  content: "";
+  height: 2.5rem;
+  width: 2.5rem;
+  background-color: white;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  border-radius: 50%;
+}
+
+/*END CSS FOR POSTS*/
