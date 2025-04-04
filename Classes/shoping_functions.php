@@ -4,7 +4,7 @@ class Shopping
     public function get_specific_products($product_type)
     {
         $DB = new Database();
-        $query = "select * from products where product_type like '%$product_type%' order by id desc limit 10";
+        $query = "select * from products order by id desc limit 10";
         $result = $DB->read($query);
         if ($result) {
             return $result;
@@ -122,71 +122,98 @@ class Shopping
         $shop_array = $this->get_shopid($userid);
         $shopid = $shop_array[0]['shopid'];
         $productid = $this->create_productid();
-        $product_name = $data['product_name'];
-        $product_type = $data['product_type'];
-        $product_price = $data['product_price'];
-        $about_product = ucfirst($data['product_description']);
-        $product_pieces = $data['product_number'];
+        $product_name = $data['Product_name'];
+        $product_type = $data['Type'];
+        $product_category = $data['Product_category'];
+        $product_price = $data['Product_price'];
+        $about_product = addslashes(ucfirst($data['Description']));
+        $product_pieces = $data['Product_quantity'];
         $date = date("Y-m-d H:i:s");
-        $totalFiles = count($file['file']['name']);
         $fileArray = array();
+        $files = $file['Product_pic'];
         $folder = "uploads/" . $userid . "/";
-        $result = $this->check_image_authentication($file);
-        if ($result == "") {
-            if (!file_exists($folder)) {
-
-                mkdir($folder, 0777, true);
-                file_put_contents($folder . "index.php", "");
+        $result = $this->check_image_authentication($files, $userid);
+        if (isset($product_name) && isset($product_type) && isset($product_category) && isset($product_price) && is_numeric($product_price)) {
+            if (strstr($product_name, " ")) {
+                $explode = explode(" ", $product_name);
+                $new_explode = array_map('ucfirst', $explode);
+                $product_Name = addslashes(implode(" ", $new_explode));
+            } else {
+                $product_Name = addslashes(ucfirst($product_name));
+            }
+            if (strstr($product_type, " ")) {
+                $explode = explode(" ", $product_type);
+                $new_explode = array_map('ucfirst', $explode);
+                $product_Type = addslashes(implode(" ", $new_explode));
+            } else {
+                $product_Type = addslashes(ucfirst($product_type));
+            }
+            if (strstr($product_category, " ")) {
+                $explode = explode(" ", $product_category);
+                $new_explode = array_map('ucfirst', $explode);
+                $product_category = addslashes(implode(" ", $new_explode));
+            } else {
+                $product_category = addslashes(ucfirst($product_category));
+            }
+            if (!is_numeric($product_price) || !is_numeric($product_pieces)) {
+                return "Invalid product price.";
+                die;
             }
 
-            for ($i = 0; $i < $totalFiles; $i++) {
-                $image = new Image();
+            if ($result == "") {
+                if (!file_exists("../$folder")) {
 
-                $filename = $folder . $image->generate_file_name(15) . ".jpg";
-                move_uploaded_file($file['file']['tmp_name'][$i], $filename);
-                $image->crop_image($filename, $filename, 1000, 1000, $file['file']['type'], $userid);
-                $fileArray[] = $filename;
+                    mkdir("../$folder", 0777, true);
+                    file_put_contents("../$folder" . "index.php", "");
+                }
+
+                foreach ($files["tmp_name"] as $index => $tmpName) {
+                    $fileType = mime_content_type($tmpName);
+                    $image = new Image();
+
+                    $filename = $image->generate_file_name(15) . ".jpg";
+                    $filedir = "../$folder" . $filename;
+                    move_uploaded_file($tmpName, $filedir);
+                    $image->crop_image($filedir, $filedir, 1000, 1000, $fileType, $userid);
+                    $fileArray[] = $folder . $filename;
+                }
+                $fileArray2 = json_encode($fileArray, true);
+            } else {
+                return $result;
+                die;
             }
-        } else {
-            return $result;
-            die;
-        }
 
-        $fileArray2 = json_encode($fileArray, true);
-
-        if (strstr($product_name, " ")) {
-            $explode = explode(" ", $product_name);
-            $new_explode = array_map('ucfirst', $explode);
-            $product_Name = implode(" ", $new_explode);
+            // $shopid = $this->create_shopid();
+            $query = "insert into products (userid, shopid, productid, product_name, product_category,  product_type, product_image, product_price, temporary_product_quantity, about_product, product_pieces, date) values('$userid', '$shopid', '$productid', '$product_Name', '$product_category', '$product_Type', '$fileArray2', '$product_price', '$product_pieces', '$about_product', '$product_pieces', '$date')";
+            $DB->save($query);
+            return "Successful";
         } else {
-            $product_Name = ucfirst($product_name);
+            return "Missing information";
         }
-        if (strstr($product_type, " ")) {
-            $explode = explode(" ", $product_type);
-            $new_explode = array_map('ucfirst', $explode);
-            $product_Type = implode(" ", $new_explode);
-        } else {
-            $product_Type = ucfirst($product_type);
-        }
-        if (!is_numeric($product_price) || !is_numeric($product_pieces)) {
-            return "Invalid input";
-            die;
-        }
-
-        // $shopid = $this->create_shopid();
-        $query = "insert into products (userid, shopid, productid, product_name, product_type, product_image, product_price, temporary_product_quantity, about_product, product_pieces, date) values('$userid', '$shopid', '$productid', '$product_Name', '$product_Type', '$fileArray2', '$product_price', '$product_pieces', '$about_product', '$product_pieces', '$date')";
-        $DB->save($query);
     }
-    public function check_image_authentication($file)
+    public function check_image_authentication($files, $userid)
     {
-        $totalFiles = count($file['file']['name']);
-        $allowed_size = 3145728;
         $error = "";
-        for ($i = 0; $i < $totalFiles; $i++) {
-            if ($file['file']['type'][$i] != "image/jpeg") {
-                $error = "Only jpeg files are allowed";
-            } elseif ($file['file']['size'][$i] > $allowed_size) {
-                $error = "Image sizes should be less than 3MB";
+        $valid_img_types = ["image/jpg", "image/jpeg", "image/png"];
+        foreach ($files["tmp_name"] as $index => $tmpName) {
+            if ($files["error"][$index] !== UPLOAD_ERR_OK) {
+                $error = "Error uploading file: " . $files["name"][$index];
+                continue;
+            }
+            $fileName = basename($files["name"][$index]);
+            $fileType = mime_content_type($tmpName);
+            if (in_array($fileType, $valid_img_types)) {
+
+                $allowed_size = 3145728;
+
+                if ($files["size"][$index] < $allowed_size) {
+                } else {
+
+                    $error = "Image size should be less than 3MB";
+                }
+            } else {
+
+                $error = "Invalid image type";
             }
         }
         return $error;

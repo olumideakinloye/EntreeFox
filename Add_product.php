@@ -482,6 +482,31 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
             font-weight: bold;
             text-align: center;
         }
+
+        .error_container {
+            height: 100dvh;
+            width: 100dvw;
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.308);
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 10;
+        }
+
+        .error_div {
+            width: 80dvw;
+            padding: 1rem 5dvw;
+            background-color: white;
+            border-radius: 20px;
+            height: auto;
+            max-height: 80dvw;
+            overflow: scroll;
+        }
     </style>
 </head>
 
@@ -494,12 +519,17 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
     </header>
     <section class="page_loader" id="page_loader">
     </section>
+    <div class="error_container" id="error">
+        <div class="error_div">
+            <p></p>
+        </div>
+    </div>
     <div class="container">
         <form id="new_product" enctype="multipart/form-data">
             <section>
                 <div class="input" id="name">
                     <i class="fa-solid fa-user"></i>
-                    <input autocomplete="cc-family-name" type="text" placeholder="Product name" id="Product_Name" name="Product_name" />
+                    <input required autocomplete="cc-family-name" type="text" placeholder="Product name" id="Product_Name" name="Product_name" />
                 </div>
                 <div class="input_error" id="Product_name_error">
                     <p id="Product_name_error_p" class="error"></p>
@@ -508,7 +538,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
             <section>
                 <div class="input" id="name">
                     <i class="fa-solid fa-user"></i>
-                    <select name="Product_category" id="Product_category">
+                    <select required name="Product_category" id="Product_category">
                         <option value="Product Category" selected disabled>Product Category</option>
                         <option data-category="Appliances" value="Home Appliances">Home Appliances</option>
                         <option data-category="Kitchen" value="Home & Kitchen">Home & Kitchen</option>
@@ -572,7 +602,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
             <section>
                 <div class="input" id="name">
                     <i class="fa-solid fa-user"></i>
-                    <select name="Type" id="Type">
+                    <select required name="Type" id="Type">
                         <option style="color: bisque;" value="Product Type" selected disabled>Product Type</option>
                     </select>
                 </div>
@@ -583,7 +613,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
             <section>
                 <div class="input" id="name">
                     <i class="fa-solid fa-user"></i>
-                    <input value="1" autocomplete="cc-family-name" type="number" min="1" placeholder="Product Quantity" name="Product_quantity" />
+                    <input required value="1" autocomplete="cc-family-name" type="number" min="1" placeholder="Product Quantity" name="Product_quantity" />
                 </div>
                 <div class="input_error" id="Product_quantity_error">
                     <p id="Product_quantity_error_p" class="error"></p>
@@ -592,7 +622,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
             <section>
                 <div class="input" id="name">
                     <i class="fa-solid fa-user"></i>
-                    <input value="500" autocomplete="cc-family-name" type="number" min="500" placeholder="Product Price" name="Product_price" />
+                    <input required value="500" autocomplete="cc-family-name" type="number" min="500" placeholder="Product Price" name="Product_price" />
                 </div>
                 <div class="input_error" id="Product_price_error">
                     <p id="Product_price_error_p" class="error"></p>
@@ -601,8 +631,8 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
             <section>
                 <div class="input textarea" id="name">
                     <i class="fa-solid fa-user"></i>
-                    <textarea autocomplete="cc-family-name" name="Description" id="description" placeholder="Product Description" rows="5" maxlength="350"></textarea>
-                    <!-- <input autocomplete="cc-family-name" type="number" min="1" placeholder="Product Quantity" id="Product_quantity" name="Product_quantity" /> -->
+                    <textarea required autocomplete="cc-family-name" name="Description" id="description" placeholder="Product Description" rows="5" maxlength="350"></textarea>
+                    <!-- <input required autocomplete="cc-family-name" type="number" min="1" placeholder="Product Quantity" id="Product_quantity" name="Product_quantity" /> -->
                 </div>
                 <div class="input_error" id="Description_error">
                     <p id="Description_error_p" class="error"></p>
@@ -612,7 +642,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
                 <div class="pictures">
                     <div class="parent">
                         <i class="fa-solid fa-camera"></i>
-                        <input id="file" type="file" name="Product_pic[]" accept=".jpg, .jpeg, .png" multiple data-max-files="3">
+                        <input required id="file" type="file" name="Product_pic[]" accept=".jpg, .jpeg, .png" multiple data-max-files="3">
                     </div>
                     <p id="file_error" class="error"></p>
                 </div>
@@ -654,7 +684,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
                 Tablets: ["Android Tablets", "Educational Tablets", "iPads", "Tablet Accessories"],
                 Phone_accessories: ["Accessory Kits", "Adapters", "Batteries", "Bluetooth Headsets", "Cables", "Car Accessories", "Earphones & Headsets", "Selfie Sticks & Tripods", "Cases", "Chargers", "Screen Protectors", "Smart Watches"],
                 Men_fashion: ["Clothing", "Shoes", "Watches", "Jewelry", "Bags", "Men's Accessories", "Underwear & Sleepwear", "Traditional & Cultural Wear"],
-                Women_fashion: ["Clothing", "Shoes", "Jewelry", "Handbags", "Men's Accessories", "Maternity"],
+                Women_fashion: ["Clothing", "Shoes", "Jewelry", "Handbags", "Women's Accessories", "Maternity"],
                 Kid_fashion: ["Boy's Fashion", "Girl's Fashion", "Boy's Accessories", "Girl's Accessories"],
                 Watches: ["Men's Watches", "Women's Watches", "Unisex Watches"],
                 Luggage: ["Backpacks", "Briefcases", "Luggages", "Umbrellas", "Gym Bags", "Laptop Bags", "Luggage Sets", "Messenger bags", "Travel Accessories", "Travel Duffels", "Travel Totes", "Waist Packs"],
@@ -725,23 +755,28 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
         const maxSize = 3 * 1024 * 1024; // 3MB in bytes
         const maxFiles = 10;
         let tracker = 0;
+        let called_error_display = false;
 
-        function evaluate() {
+        function evaluate(e) {
+            load_content();
             document.querySelectorAll("input").forEach(input => {
                 let id = `${input.name}_error`;
                 switch (input.type) {
                     case "text":
                         if (input.value.length > 1) {
+                            called_error_display = false;
                             close_error(id);
                         } else {
+                            called_error_display = true;
                             let err_name = "Product name can't be empty";
                             display_error(err_name, id);
-                            remove_load_content();
+                            // remove_load_content();
                             // console.log(e.target.value);
                             // break;
                         }
                     case "number":
                         if (/^\d+$/.test(input.value)) {
+                            called_error_display = false;
                             close_error(id)
                         } else {
                             let err_num = "";
@@ -751,16 +786,19 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
                                 err_num = "Invalid product price.";
                             }
                             if (err_num !== "") {
+                                // remove_load_content();
+                                called_error_display = true;
                                 display_error(err_num, id);
                             }
-                            remove_load_content();
                         }
                     case "file":
                         if (input.files && input.files.length > 0) {
+                            called_error_display = false;
                             document.getElementById("file_error").innerText = "";
                             tracker = 0;
                             preview_imgs(input);
                         } else {
+                            called_error_display = true;
                             document.getElementById("file_error").innerText = "Please input an image";
                         }
                     default:
@@ -774,16 +812,20 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
                 switch (select.name) {
                     case "Product_category":
                         if (select.value == "Product Category") {
+                            called_error_display = true;
                             display_error(err, id);
                             break;
                         } else {
+                            called_error_display = false;
                             close_error(id);
                         }
                     case "Type":
                         if (select.value == "Product Type") {
+                            called_error_display = true;
                             display_error(err, id);
                             break;
                         } else {
+                            called_error_display = false;
                             close_error(id);
                         }
                     default:
@@ -793,15 +835,20 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
             });
             let Text_id = `${textarea.name}_error`;
             if (textarea.value.length > 10) {
+                called_error_display = false;
                 close_error(Text_id, "textarea");
             } else {
+                called_error_display = true;
                 display_error("Product description can't be empty", Text_id, "textarea")
             }
             if (document.querySelector(".images_container")) {
-                check_parameters();
+                check_parameters(e);
             }else{
-                alert(evaluated);
+                if(evaluated === false){
+                    remove_load_content();
+                }
             }
+
         }
         const file_input = document.getElementById("file");
         file_input.addEventListener('change', (e) => {
@@ -957,7 +1004,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
         document.getElementById("new_product").addEventListener("submit", (e) => {
             e.preventDefault();
             load_content();
-            evaluate()
+            evaluate(e)
         })
 
         function load_content() {
@@ -1108,21 +1155,71 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
             currentImageElement.textContent = currentIndex + 1;
         }
 
-        function check_parameters() {
-            let p_err = document.querySelectorAll(".error");
-            console.log(p_err.length);
-
-            // let p_err_img = document.querySelectorAll(".images_container .images .error");
-            for (let ER of p_err) {
-                // console.log(ER.textContent.trim());
-                if (ER.textContent.trim() === "") {
-                    evaluated = true;
-                } else {
-                    evaluated = false;
-                    break;
-                }
+        function check_parameters(event) {
+            load_content();
+            if(called_error_display === false){
+                setTimeout(()=>{
+                    let p_err = document.querySelectorAll(".error");
+                    console.log(p_err.length);
+        
+                    // let p_err_img = document.querySelectorAll(".images_container .images .error");
+                    for (let ER of p_err) {
+                        // console.log(ER.textContent.trim());
+                        if (ER.textContent.trim() === "") {
+                            evaluated = true;
+                        } else {
+                            evaluated = false;
+                            break;
+                        }
+                    }
+                    if (evaluated === true) {
+                        const form = event.target;
+                        const formData = new FormData(form);
+                        add(formData);
+                    }else{
+                        remove_load_content();
+                    }
+                }, 260)
             }
-            alert(evaluated);
+        }
+        async function add(form) {
+
+            try {
+                // Send form data to the backend using POST
+                const response = await fetch("<?= ROOT ?>Server_side/add_product.php", {
+                    method: 'POST',
+                    body: form,
+                });
+                // Handle the response
+                if (!response.ok) {
+                    remove_load_content();
+                    throw new Error("Network response was not ok");
+                }
+
+
+                const result = await response.text(); // Assuming backend sends JSON response
+                if (!result) {
+                    remove_load_content();
+                } else if (result === "Successful") {
+                    window.location.href = "<?= ROOT ?>Profile";
+                } else {
+                    remove_load_content();
+                    display_error2(result);
+                }
+            } catch (error) {
+                display_error2(error);
+            }
+        };
+
+        function display_error2(error) {
+            const error_div = document.getElementById('error');
+            error_div.style.display = "flex";
+            error_div.querySelector(".error_div p").innerText = error;
+            let timeout = error.length * 100;
+            alert(timeout);
+            setTimeout(()=>{
+                error_div.style.display = "none";
+            }, timeout)
         }
     </script>
 </body>

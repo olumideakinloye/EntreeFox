@@ -469,8 +469,11 @@ class Post
         $myvideo = "";
         $coment = "Posted";
         $has_imag = 0;
-        
+
         $valid_vid_types = ["video/mp4", "video/mov", "video/avi"];
+
+        $valid_img_types = ["image/jpg", "image/jpeg", "image/png"];
+
 
         if (!empty($files["image"]['name'])) {
 
@@ -502,7 +505,7 @@ class Post
                     }
                     $postid = $this->create_postid();
 
-                    $query = "insert into posts (userid,postid,post,image,comments,date) values ('$userid','$postid','$post','$folder2','$coment', '$date')";
+                    $query = "insert into posts (userid,postid,post,image,comments) values ('$userid','$postid','$post','$folder2','$coment')";
 
                     $DB = new Database();
                     $DB->save($query);
@@ -538,7 +541,7 @@ class Post
                     // $this->create_tumb_nail($myvideo);
                     $postid = $this->create_postid();
 
-                    $query = "insert into posts (userid,postid,post,video,comments,date) values ('$userid','$postid','$post','$folder2','$coment','$date')";
+                    $query = "insert into posts (userid,postid,post,video,comments) values ('$userid','$postid','$post','$folder2','$coment')";
 
                     $DB = new Database();
                     $DB->save($query);
@@ -561,7 +564,7 @@ class Post
                     }
                     $image_class = new Image();
                     $file_name = $image_class->generate_file_name(15) . ".mp4";
-                    $myvideo = $folder . $file_name; 
+                    $myvideo = $folder . $file_name;
                     move_uploaded_file($_FILES["story"]['tmp_name'], $myvideo);
                     $folder2 = "uploads/" . $userid . "/" . $file_name;
                     $post = "";
@@ -571,7 +574,7 @@ class Post
                     // $this->create_tumb_nail($myvideo);
                     $postid = $this->create_postid();
 
-                    $query = "insert into posts (userid,postid,post,video,comments,date) values ('$userid','$postid','$post','$folder2','$coment','$date')";
+                    $query = "insert into posts (userid,postid,post,video,comments) values ('$userid','$postid','$post','$folder2','$coment')";
 
                     $DB = new Database();
                     $DB->save($query);
@@ -606,7 +609,7 @@ class Post
                     }
                     $postid = $this->create_postid();
 
-                    $query = "insert into posts (userid,postid,post,image,comments,date) values ('$userid','$postid','$post','$folder2','$coment', '$date')";
+                    $query = "insert into posts (userid,postid,post,image,comments) values ('$userid','$postid','$post','$folder2','$coment')";
 
                     $DB = new Database();
                     $DB->save($query);
@@ -622,7 +625,7 @@ class Post
             $postid = $this->create_postid();
 
             $post = addslashes(ucfirst($data['text']));
-            $query = "insert into posts (userid,postid,post,image,comments,date) values ('$userid','$postid','$post','$myimage','$coment','$date')";
+            $query = "insert into posts (userid,postid,post,image,comments) values ('$userid','$postid','$post','$myimage','$coment')";
 
             $DB = new Database();
             $DB->save($query);

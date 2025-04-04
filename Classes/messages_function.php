@@ -55,24 +55,6 @@ class Message extends User
             }
         }
         return $chats;
-        // if ($result) {
-
-        //     foreach ($ids as $ID) {
-        //         if ($ID !== $id && !in_array($ID, $new_ids)) {
-        //             $new_ids[] = $ID;
-        //         }
-        //     }
-        //     foreach($new_ids as $IDS){
-        //         $sql = "select * from messages where receiver = $IDS && sender = '$id' || receiver = '$id' && sender = $IDS order by id desc limit 1";
-        //         $result = $DB->read($sql);
-        //         if(!in_array($result, $chats)){
-        //             $chats[] = $result;
-        //         }
-        //     }
-        //     return $chats;
-        // } elseif {
-        //     return "ERROR";
-        // }
     }
     public function unseen($id, $sender)
     {
