@@ -154,7 +154,8 @@ $arr[] = "";
             /* width: 70px; */
             color: black;
         }
-        header a{
+
+        header a {
             margin-left: 20px;
         }
     </style>
@@ -173,11 +174,11 @@ $arr[] = "";
     ?>
     <header id="header">
         <div class="left">
-            <a href="<?= ROOT ?>Home"><i class="fa-classic fa-solid fa-arrow-left fa-fw"></i></a>
+            <a href="<?= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : ROOT . "Home" ?>"><i class="fa-classic fa-solid fa-arrow-left fa-fw"></i></a>
             <h1>Orders</h1>
         </div>
     </header>
-    <div class="content">
+    <div class="content" id="content">
         <div class="navigation">
             <nav class="navigation_navigation">
                 <div class="nav" onclick="Pending()" id="nav1gation">Pending Orders</div>
@@ -363,6 +364,9 @@ $arr[] = "";
 
         }
         updateIndicators();
+        window.addEventListener("load", () => {
+            document.querySelector(".content").style.marginTop = `${document.getElementById("header").clientHeight}px`
+        })
     </script>
 </body>
 

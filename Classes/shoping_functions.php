@@ -101,18 +101,53 @@ class Shopping
             return "Invalid data";
         }
     }
-    public function Add_to_cart($userid, $productid, $shopid)
+    public function Add_to_cart($userid, $productid, $shopid, $action)
     {
         $DB = new Database();
-        $pieces = 1;
-        $query = "select productid from products where userid = '$userid'";
-        $result = $DB->read($query);
-        if (!is_array($result)) {
-            $sql = "insert into cart (userid, productid, pieces, shopid) values('$userid', '$productid', '$pieces', '$shopid')";
+        $sql = "select product_pieces from products where productid = '$productid' limit 1 ";
+        $result = $DB->read($sql);
+        $product_pieces = $result[0]['product_pieces'];
+        $sql2 = "select pieces from cart where productid = '$productid' limit 1 ";
+        $result = $DB->read($sql2);
+        // return $result;
+        if($result && is_array($result) && isset($result[0]['pieces'])){
+            $pieces = $result[0]['pieces'];
+        }else{
+            $pieces = 1;
+        }
+        if ($action === "add") {
+            $pieces = 1;
+            $sql = "insert into cart (userid, productid, pieces, shopid) values ('$userid', '$productid', '$pieces', '$shopid')";
             $DB->save($sql);
-            return "successful";
-        } else {
-            return "added";
+            if($product_pieces == $pieces){
+                return "Added_increment_limit";
+            }else{
+                return "Added";
+            }
+        } elseif ($action === "decrement") {
+
+            if ($pieces > 1) {
+                $pieces = $pieces - 1;
+                $sql = "update cart set pieces = '$pieces' where productid = '$productid' limit 1 ";
+                $DB->save($sql);
+                return "decrement";
+            } else {
+                $sql = "delete from cart where productid = '$productid' limit 1 ";
+                $DB->save($sql);
+                return "decrement_limit";
+            }
+            
+        }elseif ($action === "increment") {
+            $pieces = $pieces + 1;
+            if($pieces < $product_pieces){
+                $sql = "update cart set pieces = '$pieces' where productid = '$productid' limit 1 ";
+                $DB->save($sql);
+                return "increment";
+            }elseif ($pieces == $product_pieces) {
+                $sql = "update cart set pieces = '$pieces' where productid = '$productid' limit 1 ";
+                $DB->save($sql);
+                return "increment_limit";
+            }
         }
     }
     public function Upload_product($data, $userid, $file)

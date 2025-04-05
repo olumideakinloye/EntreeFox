@@ -2,6 +2,10 @@
   border: 0;
   margin: 0;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  scrollbar-width: 0;
+}
+::-webkit-scrollbar{
+  display: none;
 }
 html {
   touch-action: manipulation;

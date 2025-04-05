@@ -77,21 +77,10 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
   <link rel="shortcut icon" href="<?= ROOT ?>Images/LOGO.PNG" type="image/x-icon">
   <!-- <script src="<?= ROOT ?>new_h+ome_page.js"></script> -->
   <link rel="stylesheet" href="<?= ROOT ?>CSS/Shopping_stylesheet.css" />
+  <link rel="stylesheet" href="<?= ROOT ?>CSS/navigation_stylesheet.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
-    .menu_icon {
-      font-size: 1.5rem;
-      color: black;
-      /* background-color: bisque; */
-    }
-
-    .menu ul {
-      /* overflow: scroll; */
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      /* height: 100%; */
-    }
+    
 
     .SVGs {
       height: 2rem;

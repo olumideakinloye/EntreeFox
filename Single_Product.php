@@ -53,54 +53,42 @@ if (isset($URL[1])) {
     <script src="<?= ROOT ?>new_home_page.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= ROOT ?>CSS/Single_product_stylesheet.css" />
+    <link rel="stylesheet" href="<?= ROOT ?>CSS/navigation_stylesheet.css" />
 </head>
 <style>
-    .menu_icon {
-      font-size: 1.5rem;
-      color: black;
-      /* background-color: bisque; */
-    }
-
-    .menu ul {
-      /* overflow: scroll; */
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      /* height: 100%; */
-    }
-
     .SVGs {
-      height: 2rem;
-      width: 2rem;
-      color: black;
+        height: 2rem;
+        width: 2rem;
+        color: black;
     }
 
     .users {
-      display: flex;
-      width: 95dvw;
-      overflow-x: scroll;
-      padding: 1rem 0 1rem 5vw;
-      /* background-color: aqua; */
-      gap: 0.5rem;
+        display: flex;
+        width: 95dvw;
+        overflow-x: scroll;
+        padding: 1rem 0 1rem 5vw;
+        /* background-color: aqua; */
+        gap: 0.5rem;
     }
 
     @media only screen and (max-width: 380px) {
-      .menu {
-        width: 80vw;
-      }
+        .menu {
+            width: 80vw;
+        }
     }
 </style>
+
 <body>
     <!-- <?php
-    // if ($Error != "") {
-    //     echo "<div class='error_shell' id='error_shell'>";
-    //     echo " <div class='error'>";
-    //     echo "  <P id='error_result'><b>$Error.</b></P>";
-    //     echo "  <button onclick='error()' id='error'><b>close</b></button>";
-    //     echo " </div>";
-    //     echo "</div>";
-    // }
-    ?> -->
+            // if ($Error != "") {
+            //     echo "<div class='error_shell' id='error_shell'>";
+            //     echo " <div class='error'>";
+            //     echo "  <P id='error_result'><b>$Error.</b></P>";
+            //     echo "  <button onclick='error()' id='error'><b>close</b></button>";
+            //     echo " </div>";
+            //     echo "</div>";
+            // }
+            ?> -->
     <div class="top">
         <i class="fa-solid fa-bars menu_icon" id="menu"></i>
     </div>
@@ -203,25 +191,30 @@ if (isset($URL[1])) {
         }
         ?>
         <div class="increase_decrease" style="display: <?= $display ?>;" id="pieces_number">
-            <a onclick="handleClick(event, this)" href="<?= ROOT ?>add_to_cart/product_decrement/<?= $URL[1] ?>/<?= $URL[2] ?>/<?= $added[0]['pieces'] ?>">
+            <a onclick="add_to_cart(event, this)" href="<?= ROOT ?>add_to_cart/product_decrement/<?= $URL[1] ?>/<?= $product_info[0]['shopid'] ?>/<?= $added[0]['pieces'] ?>" id="decrease_button">
                 <button>
                     -
                 </button>
             </a>
             <p id="amount_pieces"><?= $added[0]['pieces'] ?></p>
             <? "activity[1], productid[2], shopid[3], added_pieces[4]" ?>
-            <a onclick="handleClick(event, this)" href="<?= ROOT ?>add_to_cart/product_increment/<?= $URL[1] ?>/<?= $URL[2] ?>/<?= $added[0]['pieces'] ?>" style="z-index: <?= $z_index ?>;" id="increase_button">
+            <a onclick="add_to_cart(event, this)" href="<?= ROOT ?>add_to_cart/product_increment/<?= $URL[1] ?>/<?= $product_info[0]['shopid'] ?>/<?= $added[0]['pieces'] ?>" style="z-index: <?= $z_index ?>;" id="increase_button">
                 <button style="background-color: <?= $back_ground ?>;" id="increase_second_button">
                     +
                 </button>
             </a>
         </div>
-        <a onclick="handleClick(event, this)" href="<?= ROOT ?>add_to_cart/product/<?= $URL[1] ?>/<?= $product_info[0]['shopid'] ?>" style="display: <?= $display2 ?>;" id="add_cart">
-            <button>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="white">
-                    <path d="M440-600v-120H320v-80h120v-120h80v120h120v80H520v120h-80ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z" />
-                </svg>
-                Add to cart
+        <a onclick="add_to_cart(event, this)" href="<?= ROOT ?>add_to_cart/add/<?= $URL[1] ?>/<?= $product_info[0]['shopid'] ?>" style="display: <?= $display2 ?>;" id="add_cart">
+            <button id="btn_add">
+                <div class="btn_content">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="white">
+                        <path d="M440-600v-120H320v-80h120v-120h80v120h120v80H520v120h-80ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z" />
+                    </svg>
+                    Add to cart
+                </div>
+                <div class="btn_load">
+
+                </div>
             </button>
         </a>
     </div>
@@ -256,49 +249,109 @@ if (isset($URL[1])) {
 
         function response(result, element) {
             if (result != "") {
-                alert(result);
-                // var obj = JSON.parse(result);
-                // if (typeof obj.action != "undefined") {
-                //     if (obj.action == "Add") {
-                //         var amount = "";
-                //         amount = parseInt(obj.amount) > 0 ? obj.amount : "";
-                //         document.getElementById('amount_pieces').innerHTML = amount;
-                //         document.getElementById('add_cart').style.display = "none";
-                //         document.getElementById('pieces_number').style.display = "flex";
-                //         document.getElementById('increase_button').style.zIndex = 1;
-                //         document.getElementById('increase_second_button').style.backgroundColor = "#1777f9";
-                //         if (obj.sum != 0) {
-                //             document.getElementById('span').style.display = "block";
-                //         }
-                //     } else if (obj.action == "increase_limit") {
-                //         document.getElementById('add_cart').style.display = "none";
-                //         document.getElementById('pieces_number').style.display = "flex";
-                //         document.getElementById('increase_button').style.zIndex = -1;
-                //         document.getElementById('increase_second_button').style.backgroundColor = "rgba(0, 0, 0, 0.2)";
-                //         amount = parseInt(obj.amount) > 0 ? obj.amount : "";
-                //         document.getElementById('amount_pieces').innerHTML = amount;
-                //         if (obj.sum != 0) {
-                //             document.getElementById('span').style.display = "block";
-                //         }
-                //     } else if (obj.action == "decrease_limit") {
-                //         document.getElementById('add_cart').style.display = "flex";
-                //         document.getElementById('pieces_number').style.display = "none";
-                //         if (obj.sum == 0) {
-                //             document.getElementById('span').style.display = "none";
-                //         }
-                //     }
-                // }
+                var obj = JSON.parse(result);
+                if (typeof obj.action != "undefined") {
+                    remove_loader();
+                    if (obj.action == "Added") {
+                        // var amount = "";
+                        // amount = parseInt(obj.amount) > 0 ? obj.amount : "";
+                        amount = document.getElementById('amount_pieces');
+                        if (isNaN(Number(amount.textContent.trim())) || amount.textContent.trim() === "") {
+                            amount.textContent = 1;
+                        }
+                        document.getElementById('add_cart').style.display = "none";
+                        document.getElementById('pieces_number').style.display = "flex";
+                        document.getElementById('increase_button').style.zIndex = 1;
+                        document.getElementById('increase_second_button').style.backgroundColor = "#1777f9";
+                        if (obj.sum != 0) {
+                            document.getElementById('span').style.display = "block";
+                        }
+                    } else if (obj.action == "decrement") {
+                        amount = document.getElementById('amount_pieces');
+                        if (!isNaN(Number(amount.textContent.trim())) || amount.textContent.trim() !== "") {
+                            amount.textContent = parseInt(amount.textContent, 10) - 1;
+                        }
+                        document.getElementById('increase_button').style.zIndex = 1;
+                        document.getElementById('increase_second_button').style.backgroundColor = "#1777f9";
+                    } else if (obj.action == "increment") {
+                        amount = document.getElementById('amount_pieces');
+                        if (!isNaN(Number(amount.textContent.trim())) || amount.textContent.trim() !== "") {
+                            amount.textContent = parseInt(amount.textContent, 10) + 1;
+                        }
+                    } else if (obj.action == "increment_limit") {
+                        document.getElementById('add_cart').style.display = "none";
+                        document.getElementById('pieces_number').style.display = "flex";
+                        document.getElementById('increase_button').style.zIndex = -1;
+                        document.getElementById('increase_second_button').style.backgroundColor = "rgba(0, 0, 0, 0.2)";
+                        amount = document.getElementById('amount_pieces');
+                        if (!isNaN(Number(amount.textContent.trim())) || amount.textContent.trim() !== "") {
+                            if(isNaN(Number(amount.textContent.trim()))){
+                                amount.textContent = 1;
+                            }else{
+                                amount.textContent = parseInt(amount.textContent, 10) + 1;
+                            }
+                        }else{
+                            amount.textContent = "1";
+                        }
+                        if (obj.sum != 0) {
+                            document.getElementById('span').style.display = "block";
+                        }
+                    } else if (obj.action == "Added_increment_limit") {
+                        document.getElementById('add_cart').style.display = "none";
+                        document.getElementById('pieces_number').style.display = "flex";
+                        document.getElementById('increase_button').style.zIndex = -1;
+                        document.getElementById('increase_second_button').style.backgroundColor = "rgba(0, 0, 0, 0.2)";
+                        amount = document.getElementById('amount_pieces');
+                        amount.textContent = 1;
+                        if (obj.sum != 0) {
+                            document.getElementById('span').style.display = "block";
+                        }
+                    } else if (obj.action == "decrement_limit") {
+                        document.getElementById('add_cart').style.display = "flex";
+                        document.getElementById('pieces_number').style.display = "none";
+                        amount = document.getElementById('amount_pieces');
+                        amount.textContent = "";
+                        if (obj.sum == 0) {
+                            document.getElementById('span').style.display = "none";
+                        }
+                    }
+                }
             }
         }
 
-        function handleClick(fuck, these) {
+        function add_to_cart(fuck, these) {
             fuck.preventDefault();
+            display_loader();
             var link = these.getAttribute("href");
             // alert(link);
             var data = {};
             data.link = link;
             data.action = "Add_to_cart";
             ajax_send(data, fuck.target);
+        }
+
+        function display_loader() {
+            const btn = document.getElementById("btn_add");
+            btn.querySelector(".btn_content").classList.add("remove_btn_content");
+            btn.querySelector(".btn_load").classList.add("display_btn_load");
+            const inc_btn = document.getElementById('increase_button');
+            const dec_btn = document.getElementById('decrease_button');
+            inc_btn.style.zIndex = -1;
+            dec_btn.style.zIndex = -1;
+            dec_btn.style.opacity = 0.5;
+            inc_btn.style.opacity = 0.5;
+        }
+
+        function remove_loader() {
+            const btn = document.getElementById("btn_add");
+            btn.querySelector(".btn_content").classList.remove("remove_btn_content");
+            btn.querySelector(".btn_load").classList.remove("display_btn_load");
+            const inc_btn = document.getElementById('increase_button');
+            const dec_btn = document.getElementById('decrease_button');
+            inc_btn.style.zIndex = 1;
+            dec_btn.style.zIndex = 1;
+            dec_btn.style.opacity = 1;
+            inc_btn.style.opacity = 1;
         }
         const container = document.querySelector('.images_container');
         const imageWrapper = document.querySelector('.images');

@@ -3,7 +3,9 @@
   margin: 0;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
-
+::-webkit-scrollbar{
+  display: none;
+}
 html {
   height: -webkit-fill-available;
   background-color: rgb(240, 240, 240);
@@ -14,12 +16,9 @@ body{
 header {
   display: flex;
   position: fixed;
-  /* flex-direction: column; */
-  /* justify-content: space-between; */
   align-items: center;
   width: 90dvw;
-  /* height: 50px; */
-  padding: 1rem 5dvw;
+  padding: 0.5rem 5dvw;
   top: 0;
   background-color: white;
   z-index: 50;
@@ -31,16 +30,12 @@ header i {
 header .left a{
   color: black;
 }
-header h1 {
-  /* padding-left: 15px; */
-  line-height: 1;
-}
+
 .no-scroll {
   overflow: hidden;
 }
 .left {
   display: flex;
-  /* align-items: center; */
   gap: 5dvw;
 }
 .content {
@@ -117,6 +112,7 @@ header h1 {
   top: 0;
   left: 0;
   transition: 0.3s;
+  scrollbar-width: 0;
 }
 .close_pending {
   left: -100vw;
