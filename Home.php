@@ -3,7 +3,7 @@ include("autoload.php");
 $login = new Login();
 $first_visit = $login->check_new_user();
 if ($first_visit === true) {
-  header("Location: Welcome");
+  header("Location: " . ROOT . "Welcome");
 }
 
 if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_userid'])) {
@@ -19,7 +19,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
 
     $search_result = "";
     if ($user_data === false) {
-      header("Location: Log_in");
+      header("Location: " . ROOT . "Log_in");
       die;
     } else {
       $shopping = new Shopping();
@@ -28,36 +28,29 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
         $DB = new Database();
         $find = addslashes($_GET['Search']);
         $sql2 = "select * from products where product_name like '%$find%' || product_type like '%$find%' || product_category like '%$find%'";
-        $search_result = $DB->read($sql2);
+        $PROduct = $DB->read($sql2);
       }
-      if (isset($URL[1]) && isset($URL[2]) && is_numeric($URL[1]) && is_numeric($URL[2])) {
+      if (isset($URL[1]) && isset($URL[2]) && is_numeric($URL[1]) && is_numeric($URL[2]) && !isset($_GET['Search'])) {
         $PROduct = $shopping->get_user_products($URL[2], $URL[1]);
         $shop_info = $shopping->get_shop_info($URL[1]);
-        if (isset($URL[3]) && !isset($_GET['Search']) && is_numeric($URL[3])) {
+        if (isset($URL[3]) && is_numeric($URL[3])) {
           $DB = new Database();
           $product_info = $shopping->get_product($URL[3], $URL[1]);
           $find = $product_info[0]['product_name'];
           $find2 = $product_info[0]['product_type'];
           $sql2 = "select * from products where userid = '$URL[2]' && product_name like '%$find%' || product_type like '%$find2%' && productid != '$URL[3]'";
           $PROduct = $DB->read($sql2);
-        } else {
-          if (isset($_GET['Search'])) {
-            $DB = new Database();
-            $find = addslashes($_GET['Search']);
-            $sql2 = "select * from products where product_name like '%$find%' || product_type like '%$find%' && userid = '$URL[2]'";
-            $PROduct = $DB->read($sql2);
-          }
         }
       }
     }
   } else {
 
-    header("Location: Log_in");
+    header("Location: " . ROOT . "Log_in");
     die;
   }
 } else {
 
-  header("Location: Log_in");
+  header("Location: " . ROOT . "Log_in");
   die;
 }
 
@@ -142,7 +135,17 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
       background-size: contain;
     }
 
-    p {
+    .phonetablet p {
+      font-size: 0.9rem;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      line-clamp: 1;
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+    }
+
+    .users p {
       font-size: 0.9rem;
       overflow: hidden;
       display: -webkit-box;
@@ -262,12 +265,27 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
         transform: rotateZ(360deg);
       }
     }
+
+    .find {
+      padding-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      /* place-content: center; */
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      place-items: center;
+    }
+
+    .find a {
+      width: 6.5rem;
+    }
   </style>
 </head>
 
 <body>
   <?php
-  if(isset($Error)){
+  if (isset($Error)) {
     if ($Error != "") {
       echo "<div class='error_shell' id='error_shell'>";
       echo " <div class='error'>";
@@ -322,23 +340,99 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
     <form method="get">
       <div class="search_box">
         <button type="submit"><i class="fa-solid fa-magnifying-glass menu_icon"></i></button>
-        <input type="text" placeholder="Search" name="Search">
+        <input type="text" placeholder="Search" name="Search" value="<?= isset($_GET['Search']) ? $_GET['Search'] : "" ?>">
       </div>
     </form>
     <?php
-    if (isset($URL[1]) && isset($URL[2]) && is_numeric($URL[1]) && is_numeric($URL[2])) {
+    if (isset($URL[1]) && isset($URL[2]) && is_numeric($URL[1]) && is_numeric($URL[2]) && !isset($URL[3])) {
     ?>
       <h3><?= $shop_info[0]['shopname'] ?></h3>
+
     <?php
     }
     ?>
   </section>
   <?php
-  if(isset($search_result) && $search_result !== ""){
-    print_r($search_result);
-  }elseif ($Phones) {
-    foreach ($Phones as $phone_row) {
+  if (isset($PROduct)) {
   ?>
+    <section class="find">
+      <?php
+      foreach ($PROduct as $product) {
+        $added = $shopping->check_cart($product['productid'], $_SESSION['entreefox_userid']);
+        if ($added) {
+          if ($added[0]['pieces'] >= $product['product_pieces']) {
+            $z_index = "-1";
+            $back_ground = "rgba(0, 0, 0, 0.2)";
+          } else {
+            $z_index = "1";
+            $back_ground = "#1777f9";
+          }
+        } else {
+          $z_index = "1";
+          $back_ground = "#1777f9";
+        }
+        if ($added) {
+          $display = "flex";
+          $display2 = "none";
+        } else {
+          $display2 = "flex";
+          $display = "none";
+        }
+        $img = $product['product_image'];
+        $product_images = json_decode($product['product_image'], true);
+        if (is_array($product_images)) {
+          $img = $product_images[0];
+        }
+
+      ?>
+        <div class="item">
+          <a href="<?= ROOT ?>Single_Product/<?= $product['productid'] ?>" style="color: black; text-decoration:none;">
+            <div class="image" style="background-color:rgba(0, 0, 0, 0.2); background-image:url(<?= ROOT . $img ?>)">
+
+            </div>
+            <p class="name"><?= $product['product_name'] ?></p>
+            <p class="price">
+              ₦<?php
+                $price = (int)$product['product_price'] . ".00";
+                $price2 = number_format($price, 2, '.', ',');;
+                echo $price2;
+                ?>
+            </p>
+          </a>
+          <div class="controls">
+            <div class="increase_decrease" style="display: <?= $display ?>;" id="pieces_number">
+              <a onclick="add_to_cart(event, this)" href="<?= ROOT ?>add_to_cart/product_decrement/<?= $product['productid'] ?>/<?= $product['shopid'] ?>/<?= $added[0]['pieces'] ?>" id="decrease_button">
+                <button>
+                  -
+                </button>
+              </a>
+              <p id="amount_pieces"><?= isset($added[0]['pieces']) ? $added[0]['pieces'] : "" ?></p>
+              <a onclick="add_to_cart(event, this)" href="<?= ROOT ?>add_to_cart/product_increment/<?= $product['productid'] ?>/<?= $product['shopid'] ?>/<?= $added[0]['pieces'] ?>" style="z-index: <?= $z_index ?>;" id="increase_button">
+                <button style="background-color: <?= $back_ground ?>;" id="increase_second_button">
+                  +
+                </button>
+              </a>
+            </div>
+            <button class="btn_add" id="btn_add" style="display: <?= $display2 ?>;">
+              <div class="add_btn_cover">
+
+              </div>
+              <a onclick="add_to_cart(event, this)" href="<?= ROOT ?>add_to_cart/add/<?= $product['productid'] ?>/<?= $product['shopid'] ?>" id="add_cart">
+                Add to cart
+              </a>
+            </button>
+          </div>
+        </div>
+      <?php
+      }
+      ?>
+    </section>
+    <?php
+  } elseif (isset($search_result) && $search_result !== "") {
+    print_r($search_result);
+  } elseif ($Phones) {
+    foreach ($Phones as $phone_row) {
+    ?>
       <section class="phonetablet">
         <div class="title">
           <h3>Top <?= $phone_row[0]['product_category'] ?> Deals</h3>
@@ -386,6 +480,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
     }
     ?>
   </section>
+
   <!-- <?php
         if ($PROduct) {
         ?>
@@ -425,12 +520,12 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
       }
     })
 
-    function ajax_send(data, element, these, coverDiv) {
+    function ajax_send(data, element, these, coverDiv, request_type) {
       var ajax = new XMLHttpRequest();
 
       ajax.addEventListener("readystatechange", function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
-          response(ajax.responseText, element, these, coverDiv);
+          response(ajax.responseText, element, these, coverDiv, request_type);
         }
       });
       data = JSON.stringify(data);
@@ -440,69 +535,132 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
       ajax.send(data, element);
     }
 
-    function response(result, element, content, coverDiv) {
+    function response(result, element, content, coverDiv, request_type) {
       if (result != "") {
-        // alert(result);
         var obj = JSON.parse(result);
         if (typeof obj.action != "undefined") {
-          // alert(obj.action);
           respond = true;
-          if (obj.action == "Add") {
-            var amount = "";
-            amount = parseInt(obj.amount) > 0 ? obj.amount : "";
-            document.getElementById('amount' + obj.id + 'pieces').innerHTML = amount;
-            document.getElementById('add' + obj.id + 'cart').style.display = "none";
-            document.getElementById('pieces' + obj.id + 'number').style.display = "flex";
-            document.getElementById('increase' + obj.id + 'button').style.zIndex = 1;
-            document.getElementById('increase_second' + obj.id + 'button').style.backgroundColor = "#1777f9";
-            if (obj.sum != 0) {
-              document.getElementById('span').style.display = "block";
+          if (request_type === "follow") {
+            if (obj.action == "following") {
+              content.classList.replace("like_btn", "alter");
+              const loader = content.querySelector(".loader");
+              content.style.opacity = 1;
+              coverDiv.style.display = "none";
+              loader.style.display = "none";
+              let text = content.querySelector(".text");
+              text.innerHTML = "Following";
+            } else if (obj.action == "unfollow") {
+              content.classList.replace("alter", "like_btn");
+              const loader = content.querySelector(".loader");
+              content.style.opacity = 1;
+              coverDiv.style.display = "none";
+              loader.style.display = "none";
+              let text = content.querySelector(".text");
+              text.innerHTML = "Follow";
             }
-          } else if (obj.action == "increase_limit") {
-            document.getElementById('add' + obj.id + 'cart').style.display = "none";
-            document.getElementById('pieces' + obj.id + 'number').style.display = "flex";
-            document.getElementById('increase' + obj.id + 'button').style.zIndex = -1;
-            document.getElementById('increase_second' + obj.id + 'button').style.backgroundColor = "rgba(0, 0, 0, 0.2)";
-            amount = parseInt(obj.amount) > 0 ? obj.amount : "";
-            document.getElementById('amount' + obj.id + 'pieces').innerHTML = amount;
-            if (obj.sum != 0) {
-              document.getElementById('span').style.display = "block";
+          } else {
+            remove_loader(element);
+            let parent_div = element.closest(".controls");
+            const add_btn = parent_div.querySelector(".btn_add");
+            const inc_dec_div = parent_div.querySelector(".increase_decrease");
+            const amount = parent_div.querySelector(".increase_decrease p");
+            const inc_btn = parent_div.querySelector(".increase_decrease a:nth-of-type(2)");
+            const dec_btn = parent_div.querySelector(".increase_decrease a:nth-of-type(1)");
+            const inc_btn2 = parent_div.querySelector(".increase_decrease a:nth-of-type(2) button");
+            const dec_btn2 = parent_div.querySelector(".increase_decrease a:nth-of-type(1) button");
+            if (obj.action == "Added") {
+              if (isNaN(Number(amount.textContent.trim())) || amount.textContent.trim() === "") {
+                amount.textContent = 1;
+              }
+              add_btn.style.display = "none";
+              inc_dec_div.style.display = "flex";
+              inc_btn.style.zIndex = 1;
+              inc_btn2.style.backgroundColor = "#1777f9";
+              if (obj.sum != 0) {
+                document.getElementById('span').style.display = "block";
+              }
+            } else if (obj.action == "decrement") {
+              if (!isNaN(Number(amount.textContent.trim())) || amount.textContent.trim() !== "") {
+                amount.textContent = parseInt(amount.textContent, 10) - 1;
+              }
+              inc_btn.style.zIndex = 1;
+              inc_btn2.style.backgroundColor = "#1777f9";
+            } else if (obj.action == "increment") {
+              if (!isNaN(Number(amount.textContent.trim())) || amount.textContent.trim() !== "") {
+                amount.textContent = parseInt(amount.textContent, 10) + 1;
+              }
+            } else if (obj.action == "increment_limit") {
+              add_btn.style.display = "none";
+              inc_dec_div.style.display = "flex";
+              inc_btn.style.zIndex = -1;
+              inc_btn2.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
+              if (!isNaN(Number(amount.textContent.trim())) || amount.textContent.trim() !== "") {
+                if (isNaN(Number(amount.textContent.trim()))) {
+                  amount.textContent = 1;
+                } else {
+                  amount.textContent = parseInt(amount.textContent, 10) + 1;
+                }
+              } else {
+                amount.textContent = "1";
+              }
+              if (obj.sum != 0) {
+                document.getElementById('span').style.display = "block";
+              }
+            } else if (obj.action == "Added_increment_limit") {
+              add_btn.style.display = "none";
+              inc_dec_div.style.display = "flex";
+              inc_btn.style.zIndex = -1;
+              inc_btn2.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
+              amount.textContent = 1;
+              if (obj.sum != 0) {
+                document.getElementById('span').style.display = "block";
+              }
+            } else if (obj.action == "decrement_limit") {
+              add_btn.style.display = "flex";
+              inc_dec_div.style.display = "none";
+              amount.textContent = "";
+              if (obj.sum == 0) {
+                document.getElementById('span').style.display = "none";
+              }
             }
-          } else if (obj.action == "decrease_limit") {
-            document.getElementById('add' + obj.id + 'cart').style.display = "block";
-            document.getElementById('pieces' + obj.id + 'number').style.display = "none";
-            if (obj.sum == 0) {
-              document.getElementById('span').style.display = "none";
-            }
-          } else if (obj.action == "following") {
-            content.classList.replace("like_btn", "alter");
-            const loader = content.querySelector(".loader");
-            content.style.opacity = 1;
-            coverDiv.style.display = "none";
-            loader.style.display = "none";
-            let text = content.querySelector(".text");
-            text.innerHTML = "Following";
-          } else if (obj.action == "unfollow") {
-            content.classList.replace("alter", "like_btn");
-            const loader = content.querySelector(".loader");
-            content.style.opacity = 1;
-            coverDiv.style.display = "none";
-            loader.style.display = "none";
-            let text = content.querySelector(".text");
-            text.innerHTML = "Follow";
           }
         }
       }
     }
 
-    function handleClick(fuck, these) {
+    function add_to_cart(fuck, these) {
       fuck.preventDefault();
+      display_loader(fuck.target);
       var link = these.getAttribute("href");
-      respond = false;
+      // alert(link);
       var data = {};
       data.link = link;
       data.action = "Add_to_cart";
       ajax_send(data, fuck.target);
+    }
+
+    function display_loader(element) {
+      let parent_div = element.closest(".controls");
+      const btn = parent_div.querySelector(".btn_add");
+      btn.querySelector(".add_btn_cover").style.display = "block";
+      const inc_btn = parent_div.querySelector(".increase_decrease a:nth-of-type(2)");
+      const dec_btn = parent_div.querySelector(".increase_decrease a:nth-of-type(1)");
+      inc_btn.style.zIndex = -1;
+      dec_btn.style.zIndex = -1;
+      dec_btn.style.opacity = 0.5;
+      inc_btn.style.opacity = 0.5;
+    }
+
+    function remove_loader(element) {
+      let parent_div = element.closest(".controls");
+      const btn = parent_div.querySelector(".btn_add");
+      btn.querySelector(".add_btn_cover").style.display = "none";
+      const inc_btn = parent_div.querySelector(".increase_decrease a:nth-of-type(2)");
+      const dec_btn = parent_div.querySelector(".increase_decrease a:nth-of-type(1)");
+      inc_btn.style.zIndex = 1;
+      dec_btn.style.zIndex = 1;
+      dec_btn.style.opacity = 1;
+      inc_btn.style.opacity = 1;
     }
 
     function error() {
@@ -532,7 +690,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
         data.name = this.getAttribute("data-id");
         // alert(data.name);
         data.action = "follow";
-        ajax_send(data, event.target, this, coverDiv);
+        ajax_send(data, event.target, this, coverDiv, "follow");
 
         // setTimeout(() => {
         //   loader.style.display = "none";

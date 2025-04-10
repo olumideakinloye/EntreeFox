@@ -1,6 +1,7 @@
 * {
   border: 0;
   margin: 0;
+  padding: 0;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 html {
@@ -43,10 +44,8 @@ body {
   background-color: var(--white);
   overflow: auto;
   scrollbar-width: 0;
-
-
 }
-::-webkit-scrollbar{
+::-webkit-scrollbar {
   display: none;
 }
 .share {
@@ -147,7 +146,6 @@ header {
   padding: 0.5rem 5vw;
 }
 
-
 .top {
   position: fixed;
   display: flex;
@@ -178,7 +176,8 @@ header {
 }
 .left {
   display: flex;
-  align-items: center;}
+  align-items: center;
+}
 .right {
   padding-right: 2.5rem;
 }
@@ -259,7 +258,7 @@ header {
   padding-top: 0.5rem;
   /* background-color: bisque; */
 }
-.phonetablet .title {
+.title {
   width: 90vw;
   padding: 0.2rem 5vw;
   display: flex;
@@ -267,46 +266,56 @@ header {
   background-color: black;
   align-items: center;
 }
-.phonetablet .title h3 {
+.title h3 {
   font-size: 0.9rem;
   color: white;
 }
-.phonetablet .title a {
+.title a {
   font-size: 0.6rem;
   color: white;
 }
-.phonetablet .items {
+.items {
   display: flex;
   width: 100vw;
   overflow-x: scroll;
   gap: 1rem;
   padding: 0.5rem 0;
 }
-.phonetablet .items .item {
+.item {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
   align-items: center;
-  width: 3.5rem;
+  /* width: 3.5rem; */
   flex-grow: 2;
   /* padding-left: 5vw; */
-  width: 6.5rem;
+  width: 8rem;
   /* overflow: hidden; */
   /* background-color: aqua; */
 }
-.items > a:first-of-type{
-    padding-left: 5vw;
-    /* background-color: aqua; */
+.items > a:first-of-type {
+  padding-left: 5vw;
+  /* background-color: aqua; */
 }
-.phonetablet .items .item .image {
-  height: 6.5rem;
-  width: 6.5rem;
+.find .item{
+  background-color: rgba(0, 0, 0, 0.041);
+  border-radius: 0 0 10px 10px;
+}
+.find .item a:nth-child(1){
+  gap: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.item .image {
+  height: 8rem;
+  width: 8rem;
   background-size: contain;
   background-clip: border-box;
   background-repeat: no-repeat;
   background-position: center;
 }
-.phonetablet .items .item .name {
+.item .name {
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 1;
@@ -314,16 +323,111 @@ header {
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   font-size: 0.6rem;
-  /* width: 6.5rem; */
+  /* width: 8rem; */
 }
-.phonetablet .items .item p {
-  /* overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
-  -webkit-box-orient: vertical;
-  text-overflow: ellipsis; */
+.item p {
   font-size: 0.8rem;
+}
+.controls .btn_add {
+  background-color: #1777f9;
+  width: 8rem;
+  height: 2rem;
+  color: white;
+  border-radius: 10px;
+  position: relative;
+  padding: 0;
+}
+.controls .btn_add a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+  height: 100%;
+  /* width: 10rem; */
+  width: 100%;
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+  border-radius: 10px;
+ }
+.increase_decrease {
+  display: flex;
+  align-items: center;
+  width: 8rem;
+  justify-content: space-between;
+  overflow: hidden;
+}
+.increase_decrease a {
+  text-decoration: none;
+}
+
+.increase_decrease a:nth-of-type(1) button {
+  background-color: #1777f9;
+  /* padding: 0 0.5rem; */
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+  color: white;
+  border-radius: 10px;
+  margin: 0;
+}
+.increase_decrease p{
+  font-size: 1.2rem;
+}
+.increase_decrease a:nth-of-type(2) button {
+  background-color: #1777f9;
+  /* padding: 0 0.5rem; */
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1;
+  color: white;
+  border-radius: 10px;
+  margin: 0;
+  /* padding: 0; */
+}
+.increase_decrease a button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2rem;
+  width: 2.5rem;
+  margin: 0;
+}
+.increase_decrease a{
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2rem;
+  max-width: 2.5rem;
+  overflow:hidden ;
+}
+@keyframes loader {
+  from {
+    transform: rotateZ(0deg);
+  }
+
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+.display_btn_load {
+  display: block;
+}
+.remove_btn_content {
+  display: none;
+}
+.add_btn_cover {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  opacity: 0.3;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  display: none;
 }
 /* .shop {
   padding-bottom: 20px;
