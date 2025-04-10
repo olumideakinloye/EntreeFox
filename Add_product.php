@@ -575,7 +575,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
                         <option data-category="Light" value="Light & Lightning Accessories">Light & Lightning Accessories</option>
                         <option data-category="Exterior" value="Exterior Accessories">Exterior Accessories</option>
                         <option data-category="Oil_fluids" value="Oil & Fluids">Oil & Fluids</option>
-                        <option data-category="Interior" value="Interior Accessories">Interior Accessories</option>
+                        <option data-category="Interior" value="Oil & Fluids">Interior Accessories</option>
                         <option data-category="Tyre" value="Tyre & Rim">Tyre & Rim</option>
                         <option data-category="Cardio" value="Cardio Training">Cardio Training</option>
                         <option data-category="Strength" value="Strength Training">Strength Training</option>

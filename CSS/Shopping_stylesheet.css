@@ -42,8 +42,13 @@ body {
   height: -webkit-fill-available;
   background-color: var(--white);
   overflow: auto;
-}
+  scrollbar-width: 0;
 
+
+}
+::-webkit-scrollbar{
+  display: none;
+}
 .share {
   height: 200px;
 }
@@ -252,6 +257,7 @@ header {
   flex-direction: column;
   width: 100vw;
   padding-top: 0.5rem;
+  /* background-color: bisque; */
 }
 .phonetablet .title {
   width: 90vw;
@@ -280,7 +286,7 @@ header {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
-  align-items: start;
+  align-items: center;
   width: 3.5rem;
   flex-grow: 2;
   /* padding-left: 5vw; */
@@ -290,8 +296,7 @@ header {
 }
 .items > a:first-of-type{
     padding-left: 5vw;
-    /* background-color: aqua;
-     */
+    /* background-color: aqua; */
 }
 .phonetablet .items .item .image {
   height: 6.5rem;
@@ -309,15 +314,15 @@ header {
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   font-size: 0.6rem;
-  width: 6.5rem;
+  /* width: 6.5rem; */
 }
 .phonetablet .items .item p {
-  overflow: hidden;
+  /* overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   line-clamp: 1;
   -webkit-box-orient: vertical;
-  text-overflow: ellipsis;
+  text-overflow: ellipsis; */
   font-size: 0.8rem;
 }
 /* .shop {

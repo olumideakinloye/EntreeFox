@@ -1,15 +1,22 @@
 <?php
 class Shopping
 {
-    public function get_specific_products($product_type)
+    public function get_specific_products($product_type_arr)
     {
+        $products = [];
         $DB = new Database();
-        $query = "select * from products order by id desc limit 10";
-        $result = $DB->read($query);
-        if ($result) {
-            return $result;
-        } else {
-            return false;
+        if(is_array($product_type_arr)){
+            foreach($product_type_arr as $product_type){
+                $query = "select * from products where product_category = '$product_type' order by id desc limit 10";
+                $result = $DB->read($query);
+                if ($result) {
+                    $product_type2 = str_replace("\'", "'", $product_type);
+                    $products[$product_type2] = $result;
+                }
+            }
+        }
+        if(!empty($products)){
+            return $products;
         }
     }
 
@@ -110,24 +117,23 @@ class Shopping
         $sql2 = "select pieces from cart where productid = '$productid' limit 1 ";
         $result = $DB->read($sql2);
         // return $result;
-        if($result && is_array($result) && isset($result[0]['pieces'])){
+        if ($result && is_array($result) && isset($result[0]['pieces'])) {
             $pieces = $result[0]['pieces'];
-        }else{
+        } else {
             $pieces = 1;
         }
         if ($action === "add") {
             $pieces = 1;
             $sql = "insert into cart (userid, productid, pieces, shopid) values ('$userid', '$productid', '$pieces', '$shopid')";
             $DB->save($sql);
-            if($product_pieces == $pieces){
+            if ($product_pieces == $pieces) {
                 return "Added_increment_limit";
-            }else{
+            } else {
                 return "Added";
             }
         } elseif ($action === "decrement") {
-
+            $pieces = $pieces - 1;
             if ($pieces > 1) {
-                $pieces = $pieces - 1;
                 $sql = "update cart set pieces = '$pieces' where productid = '$productid' limit 1 ";
                 $DB->save($sql);
                 return "decrement";
@@ -136,18 +142,32 @@ class Shopping
                 $DB->save($sql);
                 return "decrement_limit";
             }
-            
-        }elseif ($action === "increment") {
+        } elseif ($action === "cart_decrement") {
+            $pieces = $pieces - 1;
+            if ($pieces > 1) {
+                $sql = "update cart set pieces = '$pieces' where productid = '$productid' limit 1 ";
+                $DB->save($sql);
+                return "decrement";
+            } elseif ($pieces == 1) {
+                $sql = "update cart set pieces = '$pieces' where productid = '$productid' limit 1 ";
+                $DB->save($sql);
+                return "decrement_limit";
+            }
+        } elseif ($action === "increment") {
             $pieces = $pieces + 1;
-            if($pieces < $product_pieces){
+            if ($pieces < $product_pieces) {
                 $sql = "update cart set pieces = '$pieces' where productid = '$productid' limit 1 ";
                 $DB->save($sql);
                 return "increment";
-            }elseif ($pieces == $product_pieces) {
+            } elseif ($pieces == $product_pieces) {
                 $sql = "update cart set pieces = '$pieces' where productid = '$productid' limit 1 ";
                 $DB->save($sql);
                 return "increment_limit";
             }
+        } elseif ($action === "Remove") {
+            $sql = "delete from cart where productid = '$productid' limit 1 ";
+            $DB->save($sql);
+            return "Removed";
         }
     }
     public function Upload_product($data, $userid, $file)
@@ -275,7 +295,7 @@ class Shopping
         $result = $DB->read($sql);
         return $result;
     }
-    public function check_cart2($userid)
+    public function get_cart($userid)
     {
         $DB = new Database();
         $sql = "select * from cart where userid = '$userid'";
@@ -649,5 +669,14 @@ class Shopping
                 return "No confirmed Orders";
             }
         }
+    }
+    public function get_total($userid){
+        $total = 0;
+        $cart = $this->get_cart($userid);
+        foreach($cart as $product){
+            $product_info = $this->get_product_with_productid($product['productid']);
+            $total += ($product_info[0]['product_price'] * $product['pieces']);
+        }
+        return $total;
     }
 }

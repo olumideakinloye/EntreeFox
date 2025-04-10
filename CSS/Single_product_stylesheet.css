@@ -183,7 +183,7 @@ header {
 /* END OF SHOPPING HEAD STYLE CSS */
 
 .container {
-  margin-top: 30px;
+  /* margin-top: 30px; */
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -333,18 +333,25 @@ h2 {
 .operation a {
   text-decoration: none;
 }
-.operation a:nth-of-type(2) button {
-  display: flex;
+.operation #btn_add {
   background-color: #1777f9;
   /* height: 6vh; */
-  align-items: center;
-  justify-content: space-around;
   font-size: 18px;
   font-weight: 800;
-  width: 50vw;
+  min-width: 40vw;
   color: white;
-  padding: 2vw;
+  padding: 0.5rem;
   border-radius: 10px;
+  position: relative;
+}
+.operation #btn_add a{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 100%;
+  width: 100%;
+  color: rgb(255, 255, 255);
+  text-decoration: none;
 }
 .operation a:nth-of-type(1) button {
   background-color: #1775f900;
@@ -357,14 +364,16 @@ h2 {
 .increase_decrease {
   display: flex;
   /* background-color: #535e6d; */
-  height: 7vh;
+  /* height: 7vh; */
   align-items: center;
-  justify-content: space-around;
+  /* justify-content: space-around; */
+  gap: 2rem;
   font-size: 18px;
   font-weight: 800;
-  width: 50vw;
+  min-width: 40vw;
   border-radius: 10px;
 }
+
 .increase_decrease a:nth-of-type(1) button {
   background-color: #1777f9;
   padding: 20px;
@@ -375,6 +384,13 @@ h2 {
   border-radius: 10px;
 }
 .increase_decrease a:nth-of-type(2) button {
+  background-color: #1777f9;
+  padding: 20px;
+  font-size: 40px;
+  font-weight: 5500;
+  line-height: 0;
+  color: white;
+  border-radius: 10px;
   height: auto;
   width: auto;
   /* background-color: #17f922; */
@@ -429,5 +445,16 @@ h2 {
   display: block;
 }
 .remove_btn_content{
+  display: none;
+}
+.add_btn_cover{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  opacity: 0.3;
+  top: 0;
+  left: 0;
+  z-index: 5;
   display: none;
 }

@@ -5,7 +5,7 @@ include("autoload.php");
 $login =  new Login();
 $first_visit = $login->check_new_user();
 if ($first_visit === true) {
-    header("Location: Welcome");
+    header("Location: " . ROOT . "Welcome");
 } else {
     if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_userid'])) {
 
@@ -19,17 +19,17 @@ if ($first_visit === true) {
 
 
             if ($user_data === false) {
-                header("Location: Log_in");
+                header("Location: " . ROOT . "Log_in");
                 die;
             }
         } else {
 
-            header("Location: Log_in");
+            header("Location: " . ROOT . "Log_in");
             die;
         }
     } else {
 
-        header("Location: Log_in");
+        header("Location: " . ROOT . "Log_in");
         die;
     }
 }
@@ -99,16 +99,19 @@ if (isset($URL[1])) {
                 <h1>ENTREEFOX</h1>
             </div>
             <div class="right">
-                <a href="<?= ROOT ?>Orders" style="position:relative; z-index: 0">
+                <a href="<?= ROOT ?>Cart" style="z-index: 0">
                     <?php
+                    $cart = "none";
                     $shopping = new Shopping();
-                    $added = $shopping->check_cart2($_SESSION['entreefox_userid']);
+                    $added = $shopping->get_cart($_SESSION['entreefox_userid']);
                     if ($added) {
-                        echo "<span style='background-color: #1777f9; height:10px; width:10px; position: absolute; right: 0; border-radius: 50%;'></span>";
+                        $cart = "block";
                     }
                     ?>
-                    <span id="span" style="background-color: #1777f9; height:10px; width:10px; position: absolute; right: 0; border-radius: 50%; display: none;"></span>
-                    <i class="fa-solid fa-shopping-cart menu_icon"></i>
+                    <i class="fa-solid fa-shopping-cart menu_icon" style="position:relative;">
+                        <span id="span" style="background-color: #1777f9; height:10px; width:10px; position: absolute; right: 0;top:0; border-radius: 50%; display: <?= $cart ?>;"></span>
+
+                    </i>
                 </a>
             </div>
         </div>
@@ -204,8 +207,11 @@ if (isset($URL[1])) {
                 </button>
             </a>
         </div>
-        <a onclick="add_to_cart(event, this)" href="<?= ROOT ?>add_to_cart/add/<?= $URL[1] ?>/<?= $product_info[0]['shopid'] ?>" style="display: <?= $display2 ?>;" id="add_cart">
-            <button id="btn_add">
+        <button id="btn_add" style="display: <?= $display2 ?>;">
+            <div class="add_btn_cover">
+
+            </div>
+            <a onclick="add_to_cart(event, this)" href="<?= ROOT ?>add_to_cart/add/<?= $URL[1] ?>/<?= $product_info[0]['shopid'] ?>" id="add_cart">
                 <div class="btn_content">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="white">
                         <path d="M440-600v-120H320v-80h120v-120h80v120h120v80H520v120h-80ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z" />
@@ -215,10 +221,12 @@ if (isset($URL[1])) {
                 <div class="btn_load">
 
                 </div>
-            </button>
-        </a>
+            </a>
+        </button>
     </div>
     <script>
+        let lastClickTime = 0;
+        const doubleClickThreshold = 300;
         var lastScrollTop = 200;
         document.getElementById("menu").addEventListener("click", function(e) {
             const menu_icon = document.getElementById("menu");
@@ -259,7 +267,7 @@ if (isset($URL[1])) {
                         if (isNaN(Number(amount.textContent.trim())) || amount.textContent.trim() === "") {
                             amount.textContent = 1;
                         }
-                        document.getElementById('add_cart').style.display = "none";
+                        document.getElementById('btn_add').style.display = "none";
                         document.getElementById('pieces_number').style.display = "flex";
                         document.getElementById('increase_button').style.zIndex = 1;
                         document.getElementById('increase_second_button').style.backgroundColor = "#1777f9";
@@ -279,25 +287,25 @@ if (isset($URL[1])) {
                             amount.textContent = parseInt(amount.textContent, 10) + 1;
                         }
                     } else if (obj.action == "increment_limit") {
-                        document.getElementById('add_cart').style.display = "none";
+                        document.getElementById('btn_add').style.display = "none";
                         document.getElementById('pieces_number').style.display = "flex";
                         document.getElementById('increase_button').style.zIndex = -1;
                         document.getElementById('increase_second_button').style.backgroundColor = "rgba(0, 0, 0, 0.2)";
                         amount = document.getElementById('amount_pieces');
                         if (!isNaN(Number(amount.textContent.trim())) || amount.textContent.trim() !== "") {
-                            if(isNaN(Number(amount.textContent.trim()))){
+                            if (isNaN(Number(amount.textContent.trim()))) {
                                 amount.textContent = 1;
-                            }else{
+                            } else {
                                 amount.textContent = parseInt(amount.textContent, 10) + 1;
                             }
-                        }else{
+                        } else {
                             amount.textContent = "1";
                         }
                         if (obj.sum != 0) {
                             document.getElementById('span').style.display = "block";
                         }
                     } else if (obj.action == "Added_increment_limit") {
-                        document.getElementById('add_cart').style.display = "none";
+                        document.getElementById('btn_add').style.display = "none";
                         document.getElementById('pieces_number').style.display = "flex";
                         document.getElementById('increase_button').style.zIndex = -1;
                         document.getElementById('increase_second_button').style.backgroundColor = "rgba(0, 0, 0, 0.2)";
@@ -307,7 +315,7 @@ if (isset($URL[1])) {
                             document.getElementById('span').style.display = "block";
                         }
                     } else if (obj.action == "decrement_limit") {
-                        document.getElementById('add_cart').style.display = "flex";
+                        document.getElementById('btn_add').style.display = "flex";
                         document.getElementById('pieces_number').style.display = "none";
                         amount = document.getElementById('amount_pieces');
                         amount.textContent = "";
@@ -320,20 +328,32 @@ if (isset($URL[1])) {
         }
 
         function add_to_cart(fuck, these) {
+            const currentTime = new Date().getTime();
+            // document.getElementById("add_cart").style.zIndex = -1;
             fuck.preventDefault();
-            display_loader();
-            var link = these.getAttribute("href");
-            // alert(link);
-            var data = {};
-            data.link = link;
-            data.action = "Add_to_cart";
-            ajax_send(data, fuck.target);
+            if (currentTime - lastClickTime <= doubleClickThreshold) {
+                // console.log("Double-click detected!");
+                // Call your double-click logic here
+            } else {
+                display_loader();
+                var link = these.getAttribute("href");
+                // alert(link);
+                var data = {};
+                data.link = link;
+                data.action = "Add_to_cart";
+                ajax_send(data, fuck.target);
+            }
+
+            lastClickTime = currentTime;
+
         }
 
         function display_loader() {
             const btn = document.getElementById("btn_add");
-            btn.querySelector(".btn_content").classList.add("remove_btn_content");
-            btn.querySelector(".btn_load").classList.add("display_btn_load");
+            // btn.style.opacity = 0.5;
+            btn.querySelector(".add_btn_cover").style.display = "block";
+            btn.querySelector("a .btn_content").classList.add("remove_btn_content");
+            btn.querySelector("a .btn_load").classList.add("display_btn_load");
             const inc_btn = document.getElementById('increase_button');
             const dec_btn = document.getElementById('decrease_button');
             inc_btn.style.zIndex = -1;
@@ -343,9 +363,11 @@ if (isset($URL[1])) {
         }
 
         function remove_loader() {
+            // document.getElementById("add_cart").style.zIndex = 1;
             const btn = document.getElementById("btn_add");
-            btn.querySelector(".btn_content").classList.remove("remove_btn_content");
-            btn.querySelector(".btn_load").classList.remove("display_btn_load");
+            btn.querySelector(".add_btn_cover").style.display = "none";
+            btn.querySelector("a .btn_content").classList.remove("remove_btn_content");
+            btn.querySelector("a .btn_load").classList.remove("display_btn_load");
             const inc_btn = document.getElementById('increase_button');
             const dec_btn = document.getElementById('decrease_button');
             inc_btn.style.zIndex = 1;

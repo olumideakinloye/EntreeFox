@@ -11,48 +11,44 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
   $id = $_SESSION['entreefox_userid'];
   $login = new Login();
   $result = $login->check_login($id);
-  $answer_id = "";
-  $post_ID = "";
-  $Error = "";
-  $shopping = new Shopping();
-  $Phones = $shopping->get_specific_products("phone");
-  if (isset($_GET['Search'])) {
-    $DB = new Database();
-    $find = addslashes($_GET['Search']);
-    $sql2 = "select * from products where product_name like '%$find%' || product_type like '%$find%'";
-    $PROduct = $DB->read($sql2);
-  }
-  if (isset($URL[1]) && isset($URL[2]) && is_numeric($URL[1]) && is_numeric($URL[2])) {
-    $PROduct = $shopping->get_user_products($URL[2], $URL[1]);
-    $shop_info = $shopping->get_shop_info($URL[1]);
-    if (isset($URL[3]) && !isset($_GET['Search']) && is_numeric($URL[3])) {
-      $DB = new Database();
-      $product_info = $shopping->get_product($URL[3], $URL[1]);
-      $find = $product_info[0]['product_name'];
-      $find2 = $product_info[0]['product_type'];
-      $sql2 = "select * from products where userid = '$URL[2]' && product_name like '%$find%' || product_type like '%$find2%' && productid != '$URL[3]'";
-      $PROduct = $DB->read($sql2);
-    } else {
-      if (isset($_GET['Search'])) {
-        $DB = new Database();
-        $find = addslashes($_GET['Search']);
-        $sql2 = "select * from products where product_name like '%$find%' || product_type like '%$find%' && userid = '$URL[2]'";
-        $PROduct = $DB->read($sql2);
-      }
-    }
-  }
-
   if ($result) {
 
     $user = new User();
 
     $user_data = $user->get_user($id);
 
-
+    $search_result = "";
     if ($user_data === false) {
       header("Location: Log_in");
       die;
     } else {
+      $shopping = new Shopping();
+      $Phones = $shopping->get_specific_products($category);
+      if (isset($_GET['Search'])) {
+        $DB = new Database();
+        $find = addslashes($_GET['Search']);
+        $sql2 = "select * from products where product_name like '%$find%' || product_type like '%$find%' || product_category like '%$find%'";
+        $search_result = $DB->read($sql2);
+      }
+      if (isset($URL[1]) && isset($URL[2]) && is_numeric($URL[1]) && is_numeric($URL[2])) {
+        $PROduct = $shopping->get_user_products($URL[2], $URL[1]);
+        $shop_info = $shopping->get_shop_info($URL[1]);
+        if (isset($URL[3]) && !isset($_GET['Search']) && is_numeric($URL[3])) {
+          $DB = new Database();
+          $product_info = $shopping->get_product($URL[3], $URL[1]);
+          $find = $product_info[0]['product_name'];
+          $find2 = $product_info[0]['product_type'];
+          $sql2 = "select * from products where userid = '$URL[2]' && product_name like '%$find%' || product_type like '%$find2%' && productid != '$URL[3]'";
+          $PROduct = $DB->read($sql2);
+        } else {
+          if (isset($_GET['Search'])) {
+            $DB = new Database();
+            $find = addslashes($_GET['Search']);
+            $sql2 = "select * from products where product_name like '%$find%' || product_type like '%$find%' && userid = '$URL[2]'";
+            $PROduct = $DB->read($sql2);
+          }
+        }
+      }
     }
   } else {
 
@@ -80,8 +76,6 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
   <link rel="stylesheet" href="<?= ROOT ?>CSS/navigation_stylesheet.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
-    
-
     .SVGs {
       height: 2rem;
       width: 2rem;
@@ -122,6 +116,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
       overflow: hidden;
       position: relative;
     }
+
     .user .cover {
       position: absolute;
       width: 100%;
@@ -245,6 +240,19 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
       background-color: white;
     }
 
+    #span {
+      background-color: #1777f9;
+      height: 10px;
+      width: 10px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     @keyframes loader {
       from {
         transform: rotateZ(0deg);
@@ -259,13 +267,15 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
 
 <body>
   <?php
-  if ($Error != "") {
-    echo "<div class='error_shell' id='error_shell'>";
-    echo " <div class='error'>";
-    echo "  <P id='error_result'><b>$Error.</b></P>";
-    echo "  <button onclick='error()' id='error'><b>close</b></button>";
-    echo " </div>";
-    echo "</div>";
+  if(isset($Error)){
+    if ($Error != "") {
+      echo "<div class='error_shell' id='error_shell'>";
+      echo " <div class='error'>";
+      echo "  <P id='error_result'><b>$Error.</b></P>";
+      echo "  <button onclick='error()' id='error'><b>close</b></button>";
+      echo " </div>";
+      echo "</div>";
+    }
   }
   ?>
   <div class="top">
@@ -278,16 +288,19 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
         <h1>ENTREEFOX</h1>
       </div>
       <div class="right">
-        <a href="<?= ROOT ?>Orders" style="position:relative; z-index: 0">
+        <a href="<?= ROOT ?>Cart" style="z-index: 0;">
           <?php
+          $cart = "none";
           $shopping = new Shopping();
-          $added = $shopping->check_cart2($_SESSION['entreefox_userid']);
+          $added = $shopping->get_cart($_SESSION['entreefox_userid']);
           if ($added) {
-            echo "<span style='background-color: #1777f9; height:10px; width:10px; position: absolute; right: 0; border-radius: 50%;'></span>";
+            $cart = "block";
           }
           ?>
-          <span id="span" style="background-color: #1777f9; height:10px; width:10px; position: absolute; right: 0; border-radius: 50%; display: none;"></span>
-          <i class="fa-solid fa-shopping-cart menu_icon"></i>
+          <i class="fa-solid fa-shopping-cart menu_icon" style="position:relative;">
+            <span id="span" style="display: <?= $cart ?>;">
+            </span>
+          </i>
         </a>
       </div>
     </div>
@@ -321,22 +334,47 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
     ?>
   </section>
   <?php
-  if ($Phones) {
+  if(isset($search_result) && $search_result !== ""){
+    print_r($search_result);
+  }elseif ($Phones) {
+    foreach ($Phones as $phone_row) {
   ?>
-    <section class="phonetablet">
-      <div class="title">
-        <h3>Top Phone Deals</h3>
-        <a href="">See All</a>
-      </div>
-      <div class="items">
-        <?php
-        foreach ($Phones as $phone_row) {
-          include("phones.php");
-        }
-        ?>
-      </div>
-    </section>
+      <section class="phonetablet">
+        <div class="title">
+          <h3>Top <?= $phone_row[0]['product_category'] ?> Deals</h3>
+          <a href="">See All</a>
+        </div>
+        <div class="items">
+          <?php
+          foreach ($phone_row as $row) {
+            // print_r($row);
+
+            if (is_array($row['product_image'])) {
+            }
+            $product_image = json_decode($row['product_image'], true);
+          ?>
+            <a href="<?= ROOT ?>Single_Product/<?= $row['productid'] ?>" style="color: black; text-decoration:none;">
+              <div class="item">
+                <div class="image" style="background-color:rgba(0, 0, 0, 0.2); background-image:url(<?= $product_image[0] ?>)">
+
+                </div>
+                <p class="name"><?= $row['product_name'] ?></p>
+                <p class="price">
+                  ₦<?php
+                    $price = (int)$row['product_price'] . ".00";
+                    $price2 = number_format($price, 2, '.', ',');;
+                    echo $price2;
+                    ?>
+                </p>
+              </div>
+            </a>
+          <?php
+          }
+          ?>
+        </div>
+      </section>
   <?php
+    }
   }
   ?>
   <section class="users">
