@@ -132,8 +132,8 @@ class Shopping
                 return "Added";
             }
         } elseif ($action === "decrement") {
-            $pieces = $pieces - 1;
             if ($pieces > 1) {
+                $pieces = $pieces - 1;
                 $sql = "update cart set pieces = '$pieces' where productid = '$productid' limit 1 ";
                 $DB->save($sql);
                 return "decrement";

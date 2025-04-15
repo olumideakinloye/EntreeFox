@@ -8,10 +8,12 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
         $time = new Time();
         $user_id = $user->get_user_by_name($username);
         $chats = $MSG->get_messages($_SESSION['entreefox_userid'], $user_id);
+        $MSG->set_seen_msg($_SESSION['entreefox_userid'], $user_id);
     }
 }
 ?>
 <?php if ($chats) {
+    $messages = "";
     foreach ($chats as $message) {
 ?>
         <div class="messages <?= $message['sender'] === $_SESSION['entreefox_userid'] ? "sender" : "" ?>">
@@ -38,4 +40,5 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
 
         </div>
 <?php }
-} ?>
+} 
+?>

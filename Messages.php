@@ -1,4 +1,7 @@
 <?php
+
+use BcMath\Number;
+
 include("autoload.php");
 if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_userid'])) {
 
@@ -38,6 +41,9 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
     <link rel="shortcut icon" href="<?= ROOT ?>Images/LOGO.PNG" type="image/x-icon">
     <link rel="stylesheet" href="<?= ROOT ?>CSS/Messages_stylesheet.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script type="module" src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script type="module" src="<?= ROOT ?>JS/message.js"></script>
+
 </head>
 
 <body>
@@ -66,7 +72,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
         </div>
         <div class="send">
             <textarea name="message" id="message" rows="1" maxlength="150" placeholder=""></textarea>
-            <button><img src="./Images/paper2.png" alt=""></button>
+            <button id="send"><img src="./Images/paper2.png" alt=""></button>
         </div>
         <div class="chat_head">
             <i class="fa-solid fa-arrow-left float" id="close_chat"></i>
@@ -87,7 +93,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
     </section>
     <div class="container">
         <section class="search">
-            <form method="get" id="search_form">
+            <form id="search_form">
                 <div class="search_box">
                     <button type="submit"><i class="fa-solid fa-magnifying-glass menu_icon"></i></button>
                     <input type="text" placeholder="Search" name="Search" id="search">
@@ -99,7 +105,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
             <?php
             $chat_id = 0;
             if ($chats) {
-                if(is_array($chats)){
+                if (is_array($chats)) {
                     foreach ($chats as $chat) {
                         if ($chat[0]['sender'] === $_SESSION['entreefox_userid']) {
                             $chat_id = $chat[0]['receiver'];
@@ -109,7 +115,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
                         $chater_info = $user->get_data($chat_id);
                         include("Messagees.php");
                     }
-                }else{
+                } else {
                     echo "<h1 class='no_chat'>" . $chats . "</h1>";
                 }
             }
@@ -121,7 +127,12 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
             </section>
         </section>
     </div>
+    <!-- <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script> -->
     <script>
+        const serv = "<?=Server?>";
+        let username = "";
+        let PFP = "";
+        let sender = "<?= $_SESSION['entreefox_userid'] ?>";
         const textarea = document.getElementById("message");
         const ini_height = textarea.clientHeight;
         textarea.addEventListener('input', () => {
@@ -131,57 +142,13 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
             }
 
         });
+
         // Trigger resize on page load for pre-filled content
         textarea.dispatchEvent(new Event('input'));
-        document.getElementById("search_form").addEventListener('submit', (e)=>{
+        document.getElementById("search_form").addEventListener('submit', (e) => {
             e.preventDefault();
         })
-        async function get_chat(these) {
-            document.getElementById('BG3').style.display = "flex";
-            document.getElementById('chat').style.right = 0;
-            document.body.style.overflow = "hidden";
-            username = these.getAttribute('data-name');
-            PFP = these.querySelector(".profile").style.backgroundImage;
-            try {
-                // Send form data to the backend using POST
-                const response = await fetch(`<?= ROOT ?>Chat.php?username=${username}`, {});
-                // Handle the response
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
 
-
-                const result = await response.text(); // Assuming backend sends JSON response
-                if (!result) {
-                    const chat_content = document.getElementById('chat_content');
-                    document.getElementById('chat_head_name').innerHTML = username;
-                    document.getElementById('chat_head_profile').style.backgroundImage = PFP;
-                    document.getElementById("link_to_profile").href = `<?=ROOT?>Profile/${username}`;
-                    document.getElementById('BG3').style.display = "none";
-                    chat_content.innerHTML = "";
-                } else {
-                    const chat_content = document.getElementById('chat_content');
-                    document.getElementById('chat_head_name').innerHTML = username;
-                    document.getElementById("link_to_profile").href = `<?=ROOT?>Profile/${username}`;
-                    const chat_content2 = document.querySelector('.chat_content');
-                    chat_content.innerHTML = result;
-                    chat_content2.scrollTo({
-                        top: chat_content2.scrollHeight,
-                        behavior: 'smooth'
-                    })
-                    document.getElementById('chat_head_profile').style.backgroundImage = PFP;
-                    document.getElementById('BG3').style.display = "none";
-                }
-            } catch (error) {
-                const Error = document.getElementById('error');
-                Error.style.display = "flex";
-                Error.querySelector('.error_content p').innerHTML = error;
-                setTimeout(() => {
-                    Error.style.display = "none";
-                }, 3000)
-                // document.getElementById('error_content').innerText = error;
-            }
-        }
         document.getElementById('close_chat').addEventListener('click', () => {
             document.getElementById('chat').style.right = "-100dvw";
             document.body.style.overflow = "scroll";
@@ -242,6 +209,8 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
                 find_user(event.target.value);
             }
         })
+
+
         async function find_user(username) {
             try {
                 // Send form data to the backend using POST
@@ -294,6 +263,56 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
                     Error.style.display = "none";
                 }, 3000)
             }
+        }
+        // alert(roomid);
+    </script>
+    <script>
+        async function get_chat(these) {
+            document.getElementById('BG3').style.display = "flex";
+            document.getElementById('chat').style.right = 0;
+            document.body.style.overflow = "hidden";
+            username = these.getAttribute('data-name');
+            PFP = these.querySelector(".profile").style.backgroundImage;
+            try {
+                // Send form data to the backend using POST
+                const response = await fetch(`<?= ROOT ?>Chat.php?username=${username}`, {});
+                // Handle the response
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+
+
+                const result = await response.text(); // Assuming backend sends JSON response
+                if (!result) {
+                    const chat_content = document.getElementById('chat_content');
+                    document.getElementById('chat_head_name').innerHTML = username;
+                    document.getElementById('chat_head_profile').style.backgroundImage = PFP;
+                    document.getElementById("link_to_profile").href = `<?= ROOT ?>Profile/${username}`;
+                    document.getElementById('BG3').style.display = "none";
+                    chat_content.innerHTML = "";
+                } else {
+                    const chat_content = document.getElementById('chat_content');
+                    document.getElementById('chat_head_name').innerHTML = username;
+                    document.getElementById("link_to_profile").href = `<?= ROOT ?>Profile/${username}`;
+                    const chat_content2 = document.querySelector('.chat_content');
+                    chat_content.innerHTML = result;
+                    chat_content2.scrollTo({
+                        top: chat_content2.scrollHeight,
+                        behavior: 'smooth'
+                    })
+                    document.getElementById('chat_head_profile').style.backgroundImage = PFP;
+                    document.getElementById('BG3').style.display = "none";
+                }
+            } catch (error) {
+                const Error = document.getElementById('error');
+                Error.style.display = "flex";
+                Error.querySelector('.error_content p').innerHTML = error;
+                setTimeout(() => {
+                    Error.style.display = "none";
+                }, 3000)
+                // document.getElementById('error_content').innerText = error;
+            }
+            join_room();
         }
     </script>
 </body>

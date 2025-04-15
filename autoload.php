@@ -16,6 +16,8 @@ if (!defined("ROOT")) {
 }
 $Home_folder = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . ":" . $_SERVER['SERVER_PORT'] . "/" . "EntreeFox/";
 define("entreefox", $Home_folder);
+$server =  $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'];
+define("Server", $server);
 
 session_start();
 $category =

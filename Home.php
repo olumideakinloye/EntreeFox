@@ -42,6 +42,12 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
           $PROduct = $DB->read($sql2);
         }
       }
+      if(isset($_GET['Category']) && is_string($_GET['Category'])){
+        $DB = new Database();
+        $type = addslashes($_GET['Category']);
+        $sql2 = "select * from products where product_name like '%$type%' || product_type like '%$type%' || product_category like '%$type%'";
+        $PROduct = $DB->read($sql2);
+      }
     }
   } else {
 
@@ -337,10 +343,10 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
   }
   ?>
   <section class="search">
-    <form method="get">
+    <form method="get" enctype="multipart/form-data">
       <div class="search_box">
         <button type="submit"><i class="fa-solid fa-magnifying-glass menu_icon"></i></button>
-        <input type="text" placeholder="Search" name="Search" value="<?= isset($_GET['Search']) ? $_GET['Search'] : "" ?>">
+        <input type="text" placeholder="Search" name="Search" value="<?= isset($_GET['Search']) ? $_GET['Search'] : "" ?>" required>
       </div>
     </form>
     <?php
@@ -354,6 +360,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
   </section>
   <?php
   if (isset($PROduct)) {
+    if(!empty($PROduct)){
   ?>
     <section class="find">
       <?php
@@ -428,15 +435,20 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
       ?>
     </section>
     <?php
+    }else{
+      ?>
+      <h1 style="text-align: center; width: 100dvw; padding: 1rem 0;">Can't find Products</h1>
+      <?php
+    }
   } elseif (isset($search_result) && $search_result !== "") {
-    print_r($search_result);
+    // print_r($search_result);
   } elseif ($Phones) {
     foreach ($Phones as $phone_row) {
     ?>
       <section class="phonetablet">
         <div class="title">
           <h3>Top <?= $phone_row[0]['product_category'] ?> Deals</h3>
-          <a href="">See All</a>
+          <a href="<?=ROOT?>Home?Category=<?= addslashes($phone_row[0]['product_category'])?>">See All</a>
         </div>
         <div class="items">
           <?php
@@ -480,31 +492,6 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
     }
     ?>
   </section>
-
-  <!-- <?php
-        if ($PROduct) {
-        ?>
-    <section class='shop' id='shop'>
-      <div class="boxes">
-        <?php
-          foreach ($PROduct as $Products) {
-            $image_array = json_decode($Products["product_image"], true);
-            $Products['product_image'] = $image_array[0];
-            include("All_products.php");
-          }
-        ?>
-      </div>
-    </section>
-  <?php
-        } else {
-  ?>
-    <section class='shop' id='shop'>
-      <h2>No products</h2>
-    </section>
-  <?php
-        }
-
-  ?> -->
   <script>
     let respond = false;
     var lastScrollTop = 200;

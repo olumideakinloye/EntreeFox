@@ -55,6 +55,8 @@ $DB->save($query3);
     <link rel="stylesheet" href="<?= ROOT ?>CSS/Messages_stylesheet.css">
     <link rel="stylesheet" href="<?= ROOT ?>CSS/Message_stylesheet.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script type="module" src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script type="module" src="<?= ROOT ?>JS/message.js"></script>
 </head>
 
 <body>
@@ -81,7 +83,7 @@ $DB->save($query3);
         </div>
         <div class="send">
             <textarea name="message" id="message" rows="1" maxlength="150" placeholder=""></textarea>
-            <button><img src="<?= entreefox ?>/Images/paper2.png" alt=""></button>
+            <button id="send"><img src="<?= entreefox ?>/Images/paper2.png" alt=""></button>
         </div>
         <div class="chat_head">
             <a href="<?= $return_to ?>">
@@ -101,8 +103,11 @@ $DB->save($query3);
 
     </section>
     <script>
+        const serv = "<?= Server ?>";
         const textarea = document.getElementById("message");
         const ini_height = textarea.clientHeight;
+        let PFP = document.getElementById("chat_head_profile").style.backgroundImage;
+        let sender = "<?= $_SESSION['entreefox_userid'] ?>";
         textarea.addEventListener('input', () => {
             if (textarea.scrollHeight > ini_height) {
                 textarea.style.height = 'auto';
@@ -113,10 +118,7 @@ $DB->save($query3);
         // alert("<?= $URL[1] ?>")
         async function get_chat() {
             document.getElementById('BG3').style.display = "flex";
-            // document.getElementById('chat').style.right = 0;
-            // document.body.style.overflow = "hidden";
             username = "<?= $URL[1] ?>";
-            // PFP = these.querySelector(".profile").style.backgroundImage;
             try {
                 // Send form data to the backend using POST
                 const response = await fetch(`<?= ROOT ?>Chat.php?username=${username}`, {});
@@ -133,14 +135,12 @@ $DB->save($query3);
                     chat_content.innerHTML = "";
                 } else {
                     const chat_content = document.getElementById('chat_content');
-                    // document.getElementById('chat_head_name').innerHTML = username;
                     const chat_content2 = document.querySelector('.chat_content');
                     chat_content.innerHTML = result;
                     chat_content2.scrollTo({
                         top: chat_content2.scrollHeight,
                         behavior: 'smooth'
                     })
-                    // document.getElementById('chat_head_profile').style.backgroundImage = PFP;
                     document.getElementById('BG3').style.display = "none";
                 }
             } catch (error) {
@@ -150,8 +150,8 @@ $DB->save($query3);
                 setTimeout(() => {
                     Error.style.display = "none";
                 }, 3000)
-                // document.getElementById('error_content').innerText = error;
             }
+            join_room();
         }
         get_chat();
     </script>

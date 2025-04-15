@@ -34,16 +34,15 @@ class Message extends User
             return "No chats";
         }
     }
+    public function set_seen_msg($userid, $otherid){
+        $DB = new Database();
+        $sql = "update messages set seen = 1 where receiver = '$userid' && sender = '$otherid' || sender = '$userid' && receiver = '$otherid'";
+        $DB->save($sql);
+    }
     public function find_chats($id, $otherids)
     {
         $DB = new Database();
-        // $userIdsList = implode(',', $otherids);
-        // $query = "select * from messages where receiver = '$id' && sender in ($userIdsList) || sender = '$id' && receiver in ($userIdsList) order by id desc";
-        // $result = $DB->read($query);
-        // $ids = array_column($result, 'sender');
-        // $new_ids = [];
         $chats = [];
-        // return $chats; 
         foreach ($otherids as $other_user) {
             $query = "select * from messages where receiver = '$id' && sender = '$other_user' || sender = '$id' && receiver = '$other_user' order by id desc limit 1";
             $result = $DB->read($query);
@@ -79,5 +78,13 @@ class Message extends User
         } else {
             return false;
         }
+    }
+    public function send_message($receiver, $msg, $sender){
+        $img = new Image;
+        $msgid = $img->generate_file_name(60);
+        $msg = addslashes(ucfirst($msg));
+        $query = "insert into messages (msgid, sender, receiver, message) values ('$msgid', '$sender', '$receiver', '$msg')";
+        $DB = new Database();
+        $DB->save($query);
     }
 }

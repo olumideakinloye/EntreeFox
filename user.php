@@ -1,5 +1,5 @@
 <div class="user">
-    <a href="Profile/<?= $USER['user_name'] ?>">
+    <a href="<?=ROOT?>Profile/<?= $USER['user_name'] ?>">
         <div class="image" style="background-image: url(<?= ROOT . $image = file_exists($USER["profile_image"]) ? $USER["profile_image"] : "Images/profile.png" ?>);">
 
         </div>

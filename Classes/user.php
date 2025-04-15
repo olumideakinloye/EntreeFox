@@ -165,7 +165,9 @@ class User
     public function get_users($entreefox_userid)
     {
         $followers = $this->get_following($entreefox_userid);
-        $user_ids_arr = array_column($followers, "userid");
+        if($followers){
+            $user_ids_arr = array_column($followers, "userid");
+        }
         $user_ids_arr[] = $entreefox_userid;
         // return $user_ids;
         if ($followers !== false) {
