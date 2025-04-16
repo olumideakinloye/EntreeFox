@@ -18,6 +18,10 @@ io.on("connection", (socket) => {
     socket.join(roomId);
     console.log(`User ${socket.id} joined room ${roomId}`);
   });
+  socket.on("leaveRoom", (roomId) => {
+    socket.leave(roomId);
+    console.log(`User ${socket.id} leaved room ${roomId}`);
+  });
   // console.log('');
   socket.on("chat", (data) => {
     socket.to(data.roomID).emit("chat", data);

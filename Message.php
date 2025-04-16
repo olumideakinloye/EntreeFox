@@ -150,9 +150,11 @@ $DB->save($query3);
                 setTimeout(() => {
                     Error.style.display = "none";
                 }, 3000)
-            }
-            join_room();
-        }
+            };
+            (async () => {
+                const file = await import('<?= ROOT?>JS/message.js');
+                file.join_room();
+            })();        }
         get_chat();
     </script>
 </body>

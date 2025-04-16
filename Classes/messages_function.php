@@ -36,7 +36,7 @@ class Message extends User
     }
     public function set_seen_msg($userid, $otherid){
         $DB = new Database();
-        $sql = "update messages set seen = 1 where receiver = '$userid' && sender = '$otherid' || sender = '$userid' && receiver = '$otherid'";
+        $sql = "update messages set seen = 1 where receiver = '$userid' && sender = '$otherid'";
         $DB->save($sql);
     }
     public function find_chats($id, $otherids)

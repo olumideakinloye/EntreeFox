@@ -2,7 +2,7 @@
 // $MSG = new Message;
 $unseen = $MSG->unseen($_SESSION['entreefox_userid'], $chat_id)
 ?>
-<div class="messagee" onclick="get_chat(this)" data-name = <?=$chater_info['user_name']?>>
+<div class="messagee" onclick="get_chat(this)" data-name = <?=$chater_info['user_name']?> id="<?= bcadd($_SESSION['entreefox_userid'], $chat_id) ?>">
     <div class="profile" style="background-image: url(<?= ROOT . $image = file_exists($chater_info["profile_image"]) ? $chater_info["profile_image"] : "Images/profile.png" ?>);"></div>
     <div class="text">
         <h2><?=$chater_info['user_name']?></h2>

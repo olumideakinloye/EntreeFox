@@ -136,7 +136,7 @@ header h1 {
   position: relative;
   border-bottom: 2px solid black;
 }
-.no_chat{
+.no_chat {
   text-align: center;
   width: 100%;
   padding: 1rem 0;
@@ -155,6 +155,7 @@ header h1 {
   display: flex;
   flex-direction: column;
   height: 3.5rem;
+  width: 100%;
   /* gap: 1rem; */
 }
 .messagee .text h2 {
@@ -163,12 +164,13 @@ header h1 {
 .messagee .message {
   font-size: 0.9rem;
   overflow: hidden;
-  width: 100%;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   line-clamp: 1;
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
+  width: 100%; /* Ensure it spans the full width */
+  box-sizing: border-box;
 }
 .unseen .time {
   font-size: 0.5rem;

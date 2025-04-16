@@ -41,7 +41,8 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
     <link rel="shortcut icon" href="<?= ROOT ?>Images/LOGO.PNG" type="image/x-icon">
     <link rel="stylesheet" href="<?= ROOT ?>CSS/Messages_stylesheet.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script type="module" src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
     <script type="module" src="<?= ROOT ?>JS/message.js"></script>
 
 </head>
@@ -129,7 +130,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
     </div>
     <!-- <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script> -->
     <script>
-        const serv = "<?=Server?>";
+        const serv = "<?= Server ?>";
         let username = "";
         let PFP = "";
         let sender = "<?= $_SESSION['entreefox_userid'] ?>";
@@ -152,31 +153,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
         document.getElementById('close_chat').addEventListener('click', () => {
             document.getElementById('chat').style.right = "-100dvw";
             document.body.style.overflow = "scroll";
-        })
-        document.querySelectorAll(".unseen_num").forEach(unseen_num => {
-            // alert(unseen_num.client);
-            if (unseen_num.clientWidth > 40) {
-                num = unseen_num.innerHTML;
-                division = (num / 1000);
-                if (unseen_num.innerHTML > 99999) {
-                    unseen_num.innerHTML = division.toFixed(1);
-                    unseen_num.style.borderRadius = "20px";
-                    unseen_num.style.padding = "0.3rem";
-                } else {
-                    unseen_num.innerHTML = division.toFixed(1);
-                    unseen_num.style.height = ((unseen_num.clientWidth + 7) + "px");
-                    unseen_num.style.width = ((unseen_num.clientWidth + 7) + "px");
-                }
-            } else {
-                // alert("small");
-                if (unseen_num.innerHTML <= 9) {
-                    unseen_num.style.height = ((unseen_num.clientWidth + 17) + "px");
-                    unseen_num.style.width = ((unseen_num.clientWidth + 17) + "px");
-                } else {
-                    unseen_num.style.height = ((unseen_num.clientWidth + 7) + "px");
-                    unseen_num.style.width = ((unseen_num.clientWidth + 7) + "px");
-                }
-            }
+            join();
         })
         const search = document.getElementById('search');
         search.addEventListener('focus', () => {
@@ -250,6 +227,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
                             user_name.innerHTML = new_name;
                         })
                     }
+                    resize_unseen();
                     find_div.style.height = "calc(100dvh - 10rem)";
                     find_div.style.paddingBottom = "2rem";
                     find_div.style.paddingTop = "1rem";
@@ -264,6 +242,66 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
                 }, 3000)
             }
         }
+
+        function resize_unseen() {
+            document.querySelectorAll(".unseen_num").forEach(unseen_num => {
+
+                if (unseen_num.innerHTML <= 9) {
+                    if (unseen_num.style.padding == "10px") {
+                        unseen_num.style.height = ((unseen_num.clientWidth - 20) + "px");
+                        unseen_num.style.width = ((unseen_num.clientWidth - 20) + "px");
+                        unseen_num.style.padding = "10px";
+                    } else {
+                        unseen_num.style.height = ((unseen_num.clientWidth) + "px");
+                        unseen_num.style.width = ((unseen_num.clientWidth) + "px");
+                        unseen_num.style.padding = "10px";
+                    }
+                } else if (unseen_num.innerHTML > 99999) {
+                    division = (num / 1000000);
+                    unseen_num.innerHTML = division.toFixed(1) + "M";
+                    unseen_num.style.borderRadius = "20px";
+                    unseen_num.style.padding = "0.3rem";
+                } else if (unseen_num.innerHTML > 999) {
+                    division = (num / 1000);
+                    if (unseen_num.style.padding == "10px") {
+                        unseen_num.innerHTML = division.toFixed(1) + "K";
+                        unseen_num.style.height = ((unseen_num.clientWidth - 20) + "px");
+                        unseen_num.style.width = ((unseen_num.clientWidth - 20) + "px");
+                        unseen_num.style.padding = "7px";
+                    } else if (unseen_num.style.padding == "7x") {
+                        unseen_num.innerHTML = division.toFixed(1) + "K";
+                        unseen_num.style.height = ((unseen_num.clientWidth - 14) + "px");
+                        unseen_num.style.width = ((unseen_num.clientWidth - 14) + "px");
+                        unseen_num.style.padding = "7px";
+                    } else {
+                        unseen_num.innerHTML = division.toFixed(1) + "K";
+                        unseen_num.style.height = ((unseen_num.clientWidth) + "px");
+                        unseen_num.style.width = ((unseen_num.clientWidth) + "px");
+                        unseen_num.style.padding = "7px";
+                    }
+                } else {
+                    if (unseen_num.style.padding == "10px") {
+                        unseen_num.style.height = ((unseen_num.clientWidth - 20) + "px");
+                        unseen_num.style.width = ((unseen_num.clientWidth - 20) + "px");
+                        unseen_num.style.padding = "7px";
+
+                    } else if (unseen_num.style.padding == "7x") {
+                        unseen_num.style.height = ((unseen_num.clientWidth - 14) + "px");
+                        unseen_num.style.width = ((unseen_num.clientWidth - 14) + "px");
+                        unseen_num.style.padding = "7px";
+
+                    } else {
+                        unseen_num.style.height = ((unseen_num.clientWidth) + "px");
+                        unseen_num.style.width = ((unseen_num.clientWidth) + "px");
+                        unseen_num.style.padding = "7px";
+                    }
+                }
+            })
+        }
+        resize_unseen();
+        const resize_interval = setInterval(()=>{
+            resize_unseen();
+        }, 1000);
         // alert(roomid);
     </script>
     <script>
@@ -302,6 +340,7 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
                     })
                     document.getElementById('chat_head_profile').style.backgroundImage = PFP;
                     document.getElementById('BG3').style.display = "none";
+                    clear_unseen(these);
                 }
             } catch (error) {
                 const Error = document.getElementById('error');
@@ -310,10 +349,47 @@ if (isset($_SESSION['entreefox_userid']) && is_numeric($_SESSION['entreefox_user
                 setTimeout(() => {
                     Error.style.display = "none";
                 }, 3000)
-                // document.getElementById('error_content').innerText = error;
-            }
-            join_room();
+                document.getElementById('error_content').innerText = error;
+            };
+            join("leave");
+            (async () => {
+                const file = await import('<?= ROOT ?>JS/message.js');
+                file.join_room();
+            })();
         }
+
+        function join(action = "") {
+            const Rooms = [];
+            document.querySelectorAll(".profile").forEach(profile => {
+                if (profile.style.backgroundImage) {
+                    let parts = profile.style.backgroundImage.split("/");
+                    if (parts[parts.indexOf("uploads")]) {
+                        if(!Rooms.includes(`${BigInt(parts[parts.indexOf("uploads") + 1]) + BigInt(sender)}`)){
+                            Rooms.push(`${BigInt(parts[parts.indexOf("uploads") + 1]) + BigInt(sender)}`);
+                        }
+                    }
+                }
+            });
+            if(action === "leave"){
+                (async () => {
+                    const file2 = await import('<?= ROOT ?>JS/message.js');
+                    file2.leave_rooms(Rooms);
+                })();
+            }else{
+                (async () => {
+                    const file2 = await import('<?= ROOT ?>JS/message.js');
+                    file2.join_rooms(Rooms);
+                })();
+            }
+        }
+        function clear_unseen(ter){            
+            let container = ter;
+            
+            if (ter.querySelector('.unseen .unseen_num') && ter.querySelector('.unseen .unseen_num').parentNode) {
+    ter.querySelector('.unseen .unseen_num').parentNode.removeChild(ter.querySelector('.unseen .unseen_num'));
+}
+        }
+        join();
     </script>
 </body>
 

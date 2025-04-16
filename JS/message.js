@@ -1,45 +1,83 @@
 const socket = io(`${serv}:3000`);
 let Times = [];
+let new_msg_times = [];
 socket.on("chat", (data) => {
-  // console.log(data);
-  const chat_content = document.getElementById("chat_content");
-  textarea.value = "";
-  Times.push(new Date());
-  console.log(Times);
-  if (data.sender === sender) {
-    chat_content.innerHTML += `<div class="messages sender">
-            <div class="msg">
-                <p>${data.msg}</p>
-                <span class="msg_tail">
+  if (
+    document.getElementById("chat").style.right === "-100dvw" && !document.getElementById("chat").classList.contains("chat2") || !document.getElementById("chat").style.right && !document.getElementById("chat").classList.contains("chat2")
+  ) {
+    const containers = document.querySelectorAll('.messagee');
+    const container = document.getElementById(`${data.roomID}`);
 
-                </span>
-            </div>
-            <p class="time update">${evalMessageTime(new Date())}</p>
-        </div>`;
-  } else if (data.receiver === sender) {
-    chat_content.innerHTML += `<div class="messages">
-            <div class="msg">
-                <p>${data.msg}</p>
-                <span class="msg_tail">
+    container.querySelector(".text .message").innerHTML = data.msg;
+    container.querySelector(".unseen .time").classList.add("update_new_msg");
+    container.querySelector(".unseen .time").innerHTML = evalMessageTime(
+      new Date()
+    );
+    let index = Array.from(containers).indexOf(container);
+    
+    new_msg_times[index] = new Date();
+    let num = container.querySelector(".unseen .unseen_num");
+    if (num) {
+      num.textContent = parseInt(num.textContent, 10) + 1;
+    } else {
+      const unseenElement = document.createElement('p');
 
-                </span>
-            </div>
-            <p class="time update">${evalMessageTime(new Date())}</p>
-        </div>`;
+// Add the class
+unseenElement.classList.add('unseen_num');
+
+// Set the inner text (e.g., "1")
+unseenElement.textContent = '1';
+      container.querySelector(".unseen").append(unseenElement);
+    }
+  } else {
+    const chat_content = document.getElementById("chat_content");
+    textarea.value = "";
+    Times.push(new Date());
+    if (data.sender === sender) {
+      chat_content.innerHTML += `<div class="messages sender">
+              <div class="msg">
+                  <p>${data.msg}</p>
+                  <span class="msg_tail">
+  
+                  </span>
+              </div>
+              <p class="time update">${evalMessageTime(new Date())}</p>
+          </div>`;
+    } else if (data.receiver === sender) {
+      chat_content.innerHTML += `<div class="messages">
+              <div class="msg">
+                  <p>${data.msg}</p>
+                  <span class="msg_tail">
+  
+                  </span>
+              </div>
+              <p class="time update">${evalMessageTime(new Date())}</p>
+          </div>`;
+    }
+    const chat_content2 = document.querySelector(".chat_content");
+    chat_content2.scrollTo({
+      top: chat_content2.scrollHeight,
+      behavior: "smooth",
+    });
   }
-  const chat_content2 = document.querySelector(".chat_content");
-  chat_content2.scrollTo({
-    top: chat_content2.scrollHeight,
-    behavior: "smooth",
-  });
 });
 socket.on("connect", () => {
   console.log(`You are connected: ${socket.id}`);
 });
+export function join_rooms(Rooms) {
+  Rooms.forEach((romid) => {
+    socket.emit("joinRoom", romid);
+  });
+}
+export function leave_rooms(Rooms) {
+  Rooms.forEach((romid) => {
+    socket.emit("leaveRoom", romid);
+  });
+}
 export function join_room() {
   let parts = PFP.split("/");
   let receiver = parts[parts.indexOf("uploads") + 1];
-  let roomid = Number(sender) + Number(receiver);
+  let roomid = `${BigInt(sender) + BigInt(receiver)}`;
   socket.emit("joinRoom", roomid);
   // alert(roomid)
 }
@@ -47,7 +85,7 @@ document.getElementById("send").addEventListener("click", () => {
   if (textarea.value.length > 0) {
     let parts = PFP.split("/");
     let receiver = parts[parts.indexOf("uploads") + 1];
-    let roomid = Number(sender) + Number(receiver);
+    let roomid = `${BigInt(sender) + BigInt(receiver)}`;
     // alert(roomid)
     const msg = textarea.value.replace(/\n/g, "<br>");
     socket.emit("chat", {
@@ -68,7 +106,6 @@ document.getElementById("send").addEventListener("click", () => {
             <p class="time update">${evalMessageTime(new Date())}</p>
         </div>`;
     Times.push(new Date());
-    console.log(Times);
     fetch(`${serv}:8080/EntreeFox/Server_side/save_messages.php`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -82,6 +119,11 @@ document.getElementById("send").addEventListener("click", () => {
       .then(console.log)
       .catch(console.error);
     textarea.value = "";
+    const chat_content2 = document.querySelector(".chat_content");
+    chat_content2.scrollTo({
+      top: chat_content2.scrollHeight,
+      behavior: "smooth",
+    });
   }
 });
 function evalMessageTime(datetime) {
@@ -150,6 +192,18 @@ const update_time = setInterval(() => {
     updates.forEach((time_div, index) => {
       let time = Times[index];
       time_div.innerHTML = evalMessageTime(time);
+    });
+  }
+}, 60000);
+
+const update_new_msg_time = setInterval(() => {
+  let updates2 = document.querySelectorAll(".unseen .time");
+  if (updates2) {
+    updates2.forEach((time_div2, index) => {
+      if(time_div2.classList.contains("update_new_msg")){
+        let time2 = new_msg_times[index];
+        time_div2.innerHTML = evalMessageTime(time2);
+      }
     });
   }
 }, 60000);
@@ -228,4 +282,5 @@ function generate_msgid(limit) {
   }
   return text;
 }
-window.join_room = join_room;
+// window.join_room = join_room;
+// window.join_rooms = join_rooms;
